@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CellularAutomata" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/CellularAutomata" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/CellularAutomata" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../SFML/SFML-2.5.1/include" />
+		</Compiler>
+		<Linker>
+			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-main.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-system.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-window.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-graphics.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libFLAC.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libfreetype.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libogg.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libopenal32.a" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-audio.a" />
+			<Add directory="../../SFML/SFML-2.5.1/lib" />
+		</Linker>
+		<Unit filename="include/chunk.hpp" />
+		<Unit filename="include/color.hpp" />
+		<Unit filename="include/entity.hpp" />
+		<Unit filename="include/globals.hpp" />
+		<Unit filename="include/processor.hpp" />
+		<Unit filename="include/type.hpp" />
+		<Unit filename="include/util.hpp" />
+		<Unit filename="main.cpp" />
+		<Unit filename="src/chunk.cpp" />
+		<Unit filename="src/processor.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
