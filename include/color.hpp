@@ -16,6 +16,11 @@ const uint32_t colors[(int)Type::End] = {
   0xffb8291f, /* Water */
 };
 
+static_assert((int)Type::Air   == 0, "You need to adjust the colors");
+static_assert((int)Type::Sand  == 1, "You need to adjust the colors");
+static_assert((int)Type::Stone == 2, "You need to adjust the colors");
+static_assert((int)Type::Water == 3, "You need to adjust the colors");
+
 inline uint32_t GetColor(Type t){
   #ifdef DEBUG
   if((int)t < 0 || (int)t > (int)Type::End){

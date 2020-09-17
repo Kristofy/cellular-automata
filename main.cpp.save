@@ -54,8 +54,6 @@ int main(){
                   printf("The current max is: %f\n", mx);
                 }else if(sf::Keyboard::D == currentEvent.key.code){
                   printf("TPS: %d \t\t FPS: %f\n", TPS, fps);
-                }else if(sf::Keyboard::T == currentEvent.key.code){
-                  test_chunk(chunk);
                 }
                 break;
               default:
@@ -94,7 +92,7 @@ int main(){
 
 
 void test_chunk(Chunk& chunk){
-  int square_size = 20;
+  int square_size = 70;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){
           chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j].type = Type::Sand;

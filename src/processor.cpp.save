@@ -5,7 +5,7 @@ void Processor::Update(int y, int x){
   bool ok;
   int potentialEnergy;
   int my_placex, my_placey;
-
+  
   curr = m_world[y][x];
         int speed = (int)curr->speed;
         switch(curr->type){
@@ -13,7 +13,7 @@ void Processor::Update(int y, int x){
             break;
             case Sand:
                 // Sand phisics handling ext_data
-
+                
                 //std::cout<<"Sand falling with : "<<curr->speed<<std::endl;
                 // falling down
                 ok = true;
@@ -82,6 +82,7 @@ void Processor::Update(int y, int x){
             break;
             case Water:
                 // Water phisics handling
+                UpdateEntitySpeed(curr);
                 // falling down
                 ok = true;
 
@@ -154,8 +155,8 @@ void Processor::Update(int y, int x){
 
 
                 if(ok){
+                    m_world[y][x]->speed*=WaterFriction*WaterFriction;
                     Swap(y, x, y, my_placex);
-                    curr->acceleration += Gravity - WaterFriction;
 
                     break;
                 }
@@ -173,13 +174,13 @@ void Processor::Update(int y, int x){
                 }
 
                 if(ok){
+                    m_world[y][x]->speed*=WaterFriction*WaterFriction;
                     Swap(y, x, y, my_placex);
-                    curr->acceleration += Gravity - WaterFriction;
                     break;
                 }
 
 
-                m_world[y][x]->speed *= Decay;
+                m_world[y][x]->speed *= WaterFriction;
 
 
 
@@ -188,12 +189,14 @@ void Processor::Update(int y, int x){
                 puts("An Update case not handled!");
             break;
         }
-
+        
     curr->speed += curr->acceleration;
     if(curr->speed > SpeedLimit){
         curr->speed = SpeedLimit;
-    } else if (curr->speed < 0){
-        curr->speed = 0;
     }
     curr->acceleration = 0;
+}
+
+void Processor::UpdateEntitySpeed(Entity* curr){
+    
 }

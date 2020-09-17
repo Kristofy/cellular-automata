@@ -1,5 +1,8 @@
 #include "../include/chunk.hpp"
 
+// TODO: Remove later
+extern float mx;
+
 Chunk::Chunk()
 :m_processor(ext_data)
 {
@@ -22,6 +25,8 @@ void Chunk::Update(){
             if(m_data[i][j].checked == false){
                 m_data[i][j].checked = true;
                 m_processor.Update(i+ChunkOverlap, j+ChunkOverlap);
+                // TODO: Remove later
+                mx = std::max(mx, m_data[i][j].speed);
             }
         }
     }

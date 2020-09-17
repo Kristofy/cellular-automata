@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1600285871 source:c:\programozas\c++\cellularautomata\main.cpp
+1600369849 source:c:\programozas\c++\cellularautomata\main.cpp
 	"include/globals.hpp"
 	<SFML/Graphics.hpp>
 	<iostream>
 	"include/chunk.hpp"
 
-1600284271 c:\programozas\c++\cellularautomata\include\globals.hpp
+1600367676 c:\programozas\c++\cellularautomata\include\globals.hpp
 
 1525815618 c:\programozas\sfml\sfml-2.5.1\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
@@ -430,27 +430,28 @@
 
 1600284258 c:\programozas\c++\cellularautomata\include\type.hpp
 
-1600285950 c:\programozas\c++\cellularautomata\include\processor.hpp
+1600366174 c:\programozas\c++\cellularautomata\include\processor.hpp
 	"entity.hpp"
 	"type.hpp"
 	"globals.hpp"
 	"util.hpp"
 	<cstdio>
 	<iostream>
+	<algorithm>
 
 1600285956 c:\programozas\c++\cellularautomata\include\util.hpp
 	"globals.hpp"
 	"entity.hpp"
 	<array>
 
-1600285962 c:\programozas\c++\cellularautomata\include\color.hpp
+1600360441 c:\programozas\c++\cellularautomata\include\color.hpp
 	<cstdio>
 	"type.hpp"
 
-1600285918 source:c:\programozas\c++\cellularautomata\src\chunk.cpp
+1600362673 source:c:\programozas\c++\cellularautomata\src\chunk.cpp
 	"../include/chunk.hpp"
 
-1600285918 source:c:\programozas\c++\cellularautomata\src\processor.cpp
+1600366550 source:c:\programozas\c++\cellularautomata\src\processor.cpp
 	"../include/processor.hpp"
 
 1600330692 source:e:\cellularautomata\main.cpp
