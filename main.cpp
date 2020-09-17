@@ -26,7 +26,6 @@ int main(){
   test_chunk(chunk);
 
   while ( window.isOpen() ) {
-        puts("next");
         sf::Time time = timer.getElapsedTime();
         sf::Time elapsed = time - lastTime;
 
@@ -75,10 +74,40 @@ void test_chunk(Chunk& chunk){
   int square_size = 50;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){
-          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j].type = Type::Sand;
-          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j].speed = 1;
+          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j-square_size].type = Type::Sand;
+          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j-square_size].speed = 1;
 
       }
   }
+
+  for(int i = 0; i < square_size; i++){
+      for(int j = 0; j < square_size; j++){
+          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j+square_size].type = Type::Sand;
+          chunk.m_data[ChunkSize/2-square_size/2+i][ChunkSize/2-square_size/2+j+square_size].speed = 1;
+
+      }
+  }
+
+  square_size = 30;
+  for(int i = 0; i < square_size; i++){
+      for(int j = 0; j < square_size; j++){
+          chunk.m_data[ChunkSize/2-square_size/2+i - square_size][ChunkSize/2-square_size/2+j].type = Type::Water;
+          chunk.m_data[ChunkSize/2-square_size/2+i- square_size][ChunkSize/2-square_size/2+j].speed = 1;
+
+      }
+  }
+
+
+  for(int j = 0; j < 12; j++){
+    for(int i = 0; i < ChunkSize; i++){
+        chunk.m_data[ChunkSize-j-1][i].type = Type::Stone;
+        chunk.m_data[j][i].type = Type::Stone;
+        chunk.m_data[i][ChunkSize-j-1].type = Type::Stone;
+        chunk.m_data[i][j].type = Type::Stone;
+    }
+  }
+
+
+
 }
 

@@ -7,6 +7,7 @@
 #include "util.hpp"
 #include <cstdio>
 #include <iostream>
+#include <algorithm>
 
 class Processor
 {
@@ -17,19 +18,21 @@ class Processor
 
   private:
     void UpdateEntitySpeed(Entity* curr);
-    void Move(int x1, int y1, int x2, int y2){
+    void Swap(int y, int x, int y2, int x2){
+        m_world[y][x]->moved = true;
         m_world[y2][x2]->checked = true;
-        m_world[y1][x1]->moved = true;
 
-        Type tmp_type = m_world[y1][x1]->type;
-        m_world[y1][x1]->type = m_world[y2][x2]->type;
-        m_world[y2][x2]->type = tmp_type;
+        Type tmp_type = std::move(m_world[y][x]->type);
+        m_world[y][x]->type = std::move(m_world[y2][x2]->type);
+        m_world[y2][x2]->type = std::move(tmp_type);
 
-        float tmp_speed = m_world[y1][x1]->speed;
-        m_world[y1][x1]->speed = m_world[y2][x2]->speed;
-        m_world[y2][x2]->speed = tmp_speed;
+        float tmp_speed = std::move(m_world[y][x]->speed);
+        m_world[y][x]->speed = std::move(m_world[y2][x2]->speed);
+        m_world[y2][x2]->speed = std::move(tmp_speed);
+
 
     }
+
     ExtGridPointer& m_world;
 
 };

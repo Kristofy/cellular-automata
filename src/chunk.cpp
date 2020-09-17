@@ -17,12 +17,11 @@ Chunk::Chunk()
 
 void Chunk::Update(){
 
-  for(int i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
-        for(int j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
-            Entity* curr = ext_data[i][j];
-            if(curr->checked == false){
-                curr->checked = true;
-                m_processor.Update(i, j);
+  for(int i = 0; i < ChunkSize; i++){
+        for(int j = 0; j < ChunkSize; j++){
+            if(m_data[i][j].checked == false){
+                m_data[i][j].checked = true;
+                m_processor.Update(i+ChunkOverlap, j+ChunkOverlap);
             }
         }
     }

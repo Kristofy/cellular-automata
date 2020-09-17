@@ -20,61 +20,63 @@ void Processor::Update(int y, int x){
                 potentialEnergy = speed > 2? speed:2;
                 my_placey = y+potentialEnergy;
                 for(int i = 1; i <= potentialEnergy; i++){
-                   if(m_world[y+i][x]->type != Type::Air || m_world[y+i][x]->moved){
+                   if(m_world[y+i][x]->type != Type::Air /*|| m_world[y+i][x]->moved*/){
                        ok = (i != 1);
                        my_placey = y+(i-1);
                        break;
                    }
                 }
                 if(ok){
-                    Move(x,y,x,my_placey);
+                    Swap(y,x,my_placey,x);
                     break;
                 }
-/*
+
                 // going to the right
+
                 ok = (speed>0);
-                my_placey = y-speed;
+                my_placey = y+speed;
                 my_placex = x+speed;
                 for(int i = 1; i <= speed; i++){
-                   if(m_world[x+i][y-i].type != Type::Air || m_world[x+i][y-i].moved){
+                   if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
                         ok = (i != 1);
-                        my_placey = y-(i-1);
+                        my_placey = y+(i-1);
                         my_placex = x+(i-1);
+//                        if(m_world[my_placex][my_placey]->type != Type::Air || !m_world[my_placex][my_placey]->moved){
+//                            puts("HUGE ERROR");
+//                        }
                         break;
                    }
                 }
 
-                if(ok){
-                    m_world[x][y].speed*=SandFriction;
-                    Move(x,y,my_placex,my_placey);
+               if(ok){
+                    m_world[y][x]->speed*=SandFriction;
+                    Swap(y, x, my_placey, my_placex);
                     break;
                 }
 
 
                 ok = (speed>0);
-                my_placey = y-speed;
+                my_placey = y+speed;
                 my_placex = x-speed;
                 for(int i = 1; i <= speed; i++){
-                   if(m_world[x-i][y-i].type != Type::Air || m_world[x-i][y-i].moved){
+                   if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
                         ok = (i != 1);
-                        my_placey = y-(i-1);
+                        my_placey = y+(i-1);
                         my_placex = x-(i-1);
                         break;
                    }
                 }
 
                 if(ok){
-                    m_world[x][y].speed*=SandFriction;
-                    Move(x,y,my_placex,my_placey);
+                    m_world[y][x]->speed*=SandFriction;
+                    Swap(y, x, my_placey, my_placex);
                     break;
                 }
 
-                m_world[x][y].speed *= SandFriction;
-                // if(m_world[x][y].speed < 1){
-                //     m_world[x][y].speed = 1;
-                // }
+                m_world[x][y]->speed *= SandFriction;
 
             break;
+
             case Stone:
             break;
             case Water:
@@ -84,35 +86,35 @@ void Processor::Update(int y, int x){
                 ok = true;
 
                 potentialEnergy = speed > 2? speed:2;
-                my_placey = y-potentialEnergy;
+                my_placey = y+potentialEnergy;
                 for(int i = 1; i <= potentialEnergy; i++){
-                   if(m_world[x][y-i].type != Type::Air){
+                   if(m_world[y+i][x]->type != Type::Air || m_world[y+i][x]->moved){
                        ok = (i != 1);
-                       my_placey = y-(i-1);
+                       my_placey = y+(i-1);
                        break;
                    }
                 }
                 if(ok){
-                    Move(x,y,x,my_placey);
+                    Swap(y,x,my_placey,x);
                     break;
                 }
 
                 // going to the right
                 ok = (speed > 0);
-                my_placey = y-speed;
+                my_placey = y+speed;
                 my_placex = x+speed;
                 for(int i = 1; i <= speed; i++){
-                   if(m_world[x+i][y-i].type != Type::Air || m_world[x+i][y-i].moved){
+                   if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
                         ok = (i != 1);
-                        my_placey = y-(i-1);
+                        my_placey = y+(i-1);
                         my_placex = x+(i-1);
                         break;
                    }
                 }
 
                 if(ok){
-                    m_world[x][y].speed*=WaterFriction;
-                    Move(x,y, my_placex, my_placey);
+                    m_world[y][x]->speed*=WaterFriction;
+                    Swap(y, x, my_placey, my_placex);
 
                     break;
                 }
@@ -120,24 +122,24 @@ void Processor::Update(int y, int x){
 
                 // going left
                 ok = (speed > 0);
-                my_placey = y-speed;
+                my_placey = y+speed;
                 my_placex = x-speed;
                 for(int i = 1; i <= speed; i++){
-                   if(m_world[x-i][y-i].type != Type::Air || m_world[x-i][y-i].moved){
+                   if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
                         ok = (i != 1);
-                        my_placey = y-(i-1);
+                        my_placey = y+(i-1);
                         my_placex = x-(i-1);
                         break;
                    }
                 }
 
                 if(ok){
-                    m_world[x][y].speed*=WaterFriction;
-                    Move(x,y, my_placex, my_placey);
+                    m_world[y][x]->speed*=WaterFriction;
+                    Swap(y, x, my_placey, my_placex);
 
                     break;
                 }
-
+/*
                  // going side ways left
                 ok = (speed > 0);
                 my_placex = x-speed;
