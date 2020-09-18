@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -22,6 +23,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -56,9 +58,11 @@
 		<Unit filename="include/processor.hpp" />
 		<Unit filename="include/type.hpp" />
 		<Unit filename="include/util.hpp" />
+		<Unit filename="include/worldmanager.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/chunk.cpp" />
 		<Unit filename="src/processor.cpp" />
+		<Unit filename="src/worldmanager.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -1,7 +1,7 @@
 #ifndef TYPE_H_INCLUDED
 #define TYPE_H_INCLUDED
 
-enum Type{
+enum Type : char{
   Air,
   Sand,
   Stone,

@@ -2,13 +2,17 @@
 #define GLOBALS_H_INCLUDED
 
 
-const unsigned int TPS = 60;
-const unsigned int CameraWidth = 256;
-const unsigned int CameraHeight = 256;
+const unsigned int TPS = 30;
+const unsigned int CameraWidth = 512;
+const unsigned int CameraHeight = 512;
 const char * const Title = "Testing";
-const unsigned int ChunkSize = 256;
-const unsigned int ChunkOverlap = 20;
-const unsigned int SpeedLimit = 19;
+const unsigned int ChunkSize = 128;
+const unsigned int ChunkOverlap = 12;
+const unsigned int SpeedLimit = 10;
+const unsigned int HorizontalChunks = 4;
+const unsigned int VerticalChunks = 4;
+const unsigned int WorldWidth = HorizontalChunks*ChunkSize;
+const unsigned int WorldHeight = VerticalChunks*ChunkSize;
 
 constexpr float Gravity = 0.17f;
 constexpr float SandFriction = 0.18f;
