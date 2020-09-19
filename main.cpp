@@ -10,10 +10,13 @@ float mx = 0;
 #include <SFML/Graphics.hpp>
 #include "include/globals.hpp"
 #include "worldmanager.hpp"
+#include "type.hpp"
 #include <iostream>
 #include "include/chunk.hpp"
 
-void test_chunk(WorldManager& chunk);
+Type current = Type::Sand;
+
+void test_chunk(WorldManager& chunk, int x, int y);
 
 int main(){
 
@@ -34,9 +37,7 @@ int main(){
 
   // Fps count
   float fps = 0;
-  float smoothing = 0.9f;
-
-  test_chunk(manager);
+  float smoothing = 0.69f;
 
   // Main game loop
   while ( window.isOpen() ) {
@@ -57,9 +58,18 @@ int main(){
         break;
         case sf::Event::KeyPressed:
           if(sf::Keyboard::M == currentEvent.key.code){
-          printf("The current max is: %f\n", mx);
+            printf("The current max is: %f\n", mx);
           }else if(sf::Keyboard::D == currentEvent.key.code){
-          printf("TPS: %d \t\t FPS: %f\n", TPS, fps);
+            printf("TPS: %d \t\t FPS: %f\n", TPS, fps);
+          }else if(sf::Keyboard::B == currentEvent.key.code){
+            manager.ToggleChunkBorders();
+          }else if( currentEvent.key.code >= sf::Keyboard::Num0 && currentEvent.key.code < sf::Keyboard::Num0 + Type::End){
+            current = (Type)(currentEvent.key.code - sf::Keyboard::Num0);
+          }
+        case sf::Event::MouseButtonPressed:
+          if(currentEvent.mouseButton.button == sf::Mouse::Left){
+            printf("%d %d\n", sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+            test_chunk(manager, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
           }
         break;
         default:
@@ -91,12 +101,12 @@ int main(){
   return EXIT_SUCCESS;
 }
 
-void test_chunk(WorldManager& manager){
-  int square_size = 50;
+void test_chunk(WorldManager& manager, int x, int y){
+  int square_size = 20;
   std::cout << "Test input started" << std::endl;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){
-          manager.Get(WorldHeight/2-square_size/2+i,WorldWidth/2-square_size/2+j).type = Type::Water;
+          manager.Get(y-square_size/2+i,x-square_size/2+j).type = current;
       }
   }
 

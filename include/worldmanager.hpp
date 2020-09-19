@@ -14,10 +14,13 @@ class WorldManager
     void Update();
     void Render(sf::RenderTarget& window);
     Entity& Get(int i, int j);
+    void ToggleChunkBorders();
 
   private:
     Chunk m_chunks[HorizontalChunks*VerticalChunks];
     Entity m_nope;
+    bool m_isBordersVisible;
+    sf::VertexArray m_chunkBorders;
 
 };
 

@@ -30,6 +30,11 @@ class Processor
         m_world[y2][x2]->speed = std::move(tmp_speed);
 
         curr = m_world[y2][x2];
+
+        if(y2 >= ChunkSize + ChunkOverlap && x2 < ChunkOverlap){
+            puts("Bottom left triggered");
+        }
+
     }
 
     Entity* curr;

@@ -20,14 +20,15 @@ class Chunk
     void SetBorder(Directions Side, Entity* map_to);
     void Bind(Directions Side, Chunk& other);
 
-    Entity m_data[ChunkSize][ChunkSize];
   private:
+    ExtGridPointer m_ext_data;
+    Entity m_data[ChunkSize][ChunkSize];
+    uint32_t m_color_data[ChunkSize][ChunkSize];
+    Processor m_processor;
+
+    
     sf::Texture m_texture;
     sf::Sprite m_sprite;
-
-    uint32_t m_color_data[ChunkSize][ChunkSize];
-    ExtGridPointer m_ext_data;
-    Processor m_processor;
 
 };
 
