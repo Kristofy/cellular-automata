@@ -4,37 +4,43 @@
 extern float mx;
 
 Chunk::Chunk()
-:m_processor(m_ext_data)
+:m_processor(m_data)
 {
 
+  std::cout << "Chunk init started" << std::endl;
+  m_data = new Entity**[ChunkSize + 2*ChunkOverlap];
   for(unsigned i = 0; i < ChunkSize; i++){
-    for(unsigned j = 0; j < ChunkSize; j++){
-      m_data[i][j].type = Type::Air;
-      m_ext_data[i + ChunkOverlap][j + ChunkOverlap] = &m_data[i][j];
+    m_data[i] = new Entity*[ChunkSize + 2*ChunkOverlap];
+  }
+  std::cout << "Mid way" << std::endl;
+  for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
+    for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
+      m_data[i][j] = new Entity(Type::Air);
     }
   }
+  std::cout << "Right before textures" << std::endl;
   m_texture.create(ChunkSize, ChunkSize);
   m_sprite.setTexture(m_texture);
-
+  std::cout << "Chunk init ended" << std::endl;
 }
 
 void Chunk::Update(){
 
-  for(unsigned i = 0; i < ChunkSize; i++){
-    for(unsigned j = 0; j < ChunkSize; j++){
-      if(m_data[i][j].checked == false){
-        m_data[i][j].checked = true;
-        m_processor.Update(i+ChunkOverlap, j+ChunkOverlap);
+  for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
+    for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
+      if(m_data[i][j]->checked == false){
+        m_data[i][j]->checked = true;
+        m_processor.Update(i, j);
         // TODO: Remove later
-        mx = std::max(mx, m_data[i][j].speed);
+        mx = std::max(mx, m_data[i][j]->speed);
       }
     }
   }
 
-  for(unsigned i = 0; i < ChunkSize; i++){
-    for(unsigned j = 0; j < ChunkSize; j++){
-      m_data[j][i].checked = false;
-      m_data[j][i].moved = false;
+  for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
+    for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
+      m_data[j][i]->checked = false;
+      m_data[j][i]->moved = false;
     }
   }
 
@@ -44,7 +50,7 @@ void Chunk::Update(){
 void Chunk::Render(sf::RenderTarget& window){
   for(unsigned i = 0; i < ChunkSize; i++){
     for(unsigned j = 0; j < ChunkSize; j++){
-      m_color_data[j][i] = GetColor(m_data[j][i].type);
+      m_color_data[j][i] = GetColor(m_data[j + ChunkOverlap][i + ChunkOverlap]->type);
     }
   }
   m_texture.update((uint8_t*)m_color_data, ChunkSize, ChunkSize, 0, 0);
@@ -61,7 +67,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Bottom:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkSize; j++){
-          m_ext_data[i+ChunkOverlap + ChunkSize][j + ChunkOverlap] = target;
+          m_data[i+ChunkOverlap + ChunkSize][j + ChunkOverlap] = target;
         }
       }
     break;
@@ -69,7 +75,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Bottom_Left:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap + ChunkSize][j] = target;
+          m_data[i + ChunkOverlap + ChunkSize][j] = target;
         }
       }
 
@@ -77,7 +83,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Left:
       for(unsigned i = 0; i < ChunkSize; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap][j] = target;
+          m_data[i + ChunkOverlap][j] = target;
         }
       }
     break;
@@ -85,7 +91,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Top_Left:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i][j] = target;
+          m_data[i][j] = target;
         }
       }
     break;
@@ -93,7 +99,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Top:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkSize; j++){
-          m_ext_data[i][j+ChunkOverlap] = target;
+          m_data[i][j+ChunkOverlap] = target;
         }
       }
     break;
@@ -101,7 +107,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Top_Right:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i][j + ChunkSize + ChunkOverlap] = target;
+          m_data[i][j + ChunkSize + ChunkOverlap] = target;
         }
       }
     break;
@@ -109,7 +115,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Right:
       for(unsigned i = 0; i < ChunkSize; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap][j + ChunkSize + ChunkOverlap] = target;
+          m_data[i + ChunkOverlap][j + ChunkSize + ChunkOverlap] = target;
         }
       }
     break;
@@ -117,7 +123,7 @@ void Chunk::SetBorder(Directions Side, Entity* target){
     case Directions::Bottom_Right:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkSize + ChunkOverlap][j + ChunkSize + ChunkOverlap] = target;
+          m_data[i + ChunkSize + ChunkOverlap][j + ChunkSize + ChunkOverlap] = target;
         }
       }
     break;
@@ -130,7 +136,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Bottom:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkSize; j++){
-          m_ext_data[i+ChunkOverlap + ChunkSize][j + ChunkOverlap] = &other.m_data[i][j];
+          m_data[i+ChunkOverlap + ChunkSize][j + ChunkOverlap] = other.m_data[i + ChunkOverlap][j + ChunkOverlap];
         }
       }
     break;
@@ -138,7 +144,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Bottom_Left:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap + ChunkSize][j] = &other.m_data[i][j + ChunkSize - ChunkOverlap];
+          m_data[i + ChunkOverlap + ChunkSize][j] = other.m_data[i + ChunkOverlap][j + ChunkSize];
         }
       }
     break;
@@ -146,7 +152,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Left:
       for(unsigned i = 0; i < ChunkSize; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap][j] = &other.m_data[i][j + ChunkSize - ChunkOverlap];
+          m_data[i + ChunkOverlap][j] = other.m_data[i + ChunkOverlap][j + ChunkSize];
         }
       }
     break;
@@ -154,7 +160,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Top_Left:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i][j] = &other.m_data[i + ChunkSize - ChunkOverlap][j + ChunkSize - ChunkOverlap];
+          m_data[i][j] = other.m_data[i + ChunkSize][j + ChunkSize];
         }
       }
     break;
@@ -162,7 +168,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Top:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkSize; j++){
-          m_ext_data[i][j+ChunkOverlap] = &other.m_data[i + ChunkSize - ChunkOverlap][j];
+          m_data[i][j+ChunkOverlap] = other.m_data[i + ChunkSize][j + ChunkOverlap];
         }
       }
     break;
@@ -170,7 +176,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Top_Right:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i][j + ChunkSize + ChunkOverlap] = &other.m_data[i + ChunkSize - ChunkOverlap][j];
+          m_data[i][j + ChunkSize + ChunkOverlap] = other.m_data[i + ChunkSize][j + ChunkOverlap];
         }
       }
     break;
@@ -178,7 +184,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Right:
       for(unsigned i = 0; i < ChunkSize; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkOverlap][j + ChunkSize + ChunkOverlap] = &other.m_data[i][j];
+          m_data[i + ChunkOverlap][j + ChunkSize + ChunkOverlap] = other.m_data[i + ChunkOverlap][j + ChunkOverlap];
         }
       }
     break;
@@ -186,7 +192,7 @@ void Chunk::Bind(Directions Side, Chunk& other){
     case Directions::Bottom_Right:
       for(unsigned i = 0; i < ChunkOverlap; i++){
         for(unsigned j = 0; j < ChunkOverlap; j++){
-          m_ext_data[i + ChunkSize + ChunkOverlap][j + ChunkSize + ChunkOverlap] = &other.m_data[i][j];
+          m_data[i + ChunkSize + ChunkOverlap][j + ChunkSize + ChunkOverlap] = other.m_data[i + ChunkOverlap][j + ChunkOverlap];
         }
       }
     break;

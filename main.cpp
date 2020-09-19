@@ -20,7 +20,7 @@ void test_chunk(WorldManager& chunk, int x, int y);
 
 int main(){
 
-  std::cout << "The allocated Stack size By the Whole World is: "<<sizeof(WorldManager)<<std::endl;
+  std::cout << "The allocated Stack size By the Whole World is: "<<sizeof(Chunk)<<std::endl;
   // The main object
   WorldManager manager;
 

@@ -142,7 +142,7 @@ void WorldManager::Render(sf::RenderTarget& window){
 }
 
 Entity& WorldManager::Get(int i, int j){
-  return m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize][j%ChunkSize];
+  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize][j%ChunkSize];
 }
 
 void WorldManager::ToggleChunkBorders(){

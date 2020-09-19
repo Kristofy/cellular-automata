@@ -23,8 +23,7 @@ class Chunk
     void Bind(Directions Side, Chunk& other);
 
   private:
-    ExtGridPointer m_ext_data;
-    Entity m_data[ChunkSize][ChunkSize];
+    ExtGridPointer m_data;
     uint32_t m_color_data[ChunkSize][ChunkSize];
     Processor m_processor;
 

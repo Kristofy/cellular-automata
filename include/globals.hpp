@@ -6,12 +6,12 @@ const unsigned int TPS = 60;
 const unsigned int CameraWidth = 256;
 const unsigned int CameraHeight = 256;
 const char * const Title = "Testing";
-const unsigned int ChunkSize = 64;
+const unsigned int ChunkSize = 256;
 const unsigned int SubChunkSize = 16;
 const unsigned int ChunkOverlap = 6;
 const unsigned int SpeedLimit = ChunkOverlap;
-const unsigned int HorizontalChunks = 4;
-const unsigned int VerticalChunks = 4;
+const unsigned int HorizontalChunks = 1;
+const unsigned int VerticalChunks = 1;
 const unsigned int WorldWidth = HorizontalChunks*ChunkSize;
 const unsigned int WorldHeight = VerticalChunks*ChunkSize;
 

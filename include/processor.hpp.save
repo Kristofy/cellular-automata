@@ -30,11 +30,12 @@ class Processor
         m_world[y2][x2]->speed = std::move(tmp_speed);
 
         curr = m_world[y2][x2];
+
     }
 
     Entity* curr;
 
-    ExtGridPointer& m_world;
+    Entity*** m_world;
 
 };
 
