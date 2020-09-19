@@ -1,11 +1,14 @@
 #include "../include/processor.hpp"
 
-void Processor::Update(int y, int x){
+extern float fastestElement;
+
+void Processor::Update(unsigned y, unsigned x){
   bool ok;
-  int potentialEnergy;
-  int my_placex, my_placey;
+  unsigned potentialEnergy;
+  unsigned my_placex, my_placey;
 
   m_curr = m_world[y][x];
+  fastestElement = (fastestElement > m_curr->speed) ? fastestElement : m_curr->speed;
   int speed = (int)m_curr->speed;
   switch(m_curr->type){
     case Air:
@@ -136,22 +139,6 @@ void Processor::Update(int y, int x){
         break;
       }
 
-      // Flowing Left
-      ok = (speed > 0);
-      my_placex = x-speed;
-      for(int i = 1; i <= speed; i++){
-        if(m_world[y][x-i]->type != Type::Air){
-          ok = (i!=1);
-          my_placex = x - (i - 1);
-          break;
-        }
-      }
-
-      if(ok){
-        Swap(y, x, y, my_placex);
-        break;
-      }
-
       // Flowing Right
       ok = (speed > 0);
       my_placex = x+speed;
@@ -159,6 +146,23 @@ void Processor::Update(int y, int x){
         if(m_world[y][x+i]->type != Type::Air){
           ok = (i!=1);
           my_placex = x + (i - 1);
+          break;
+        }
+      }
+
+      if(ok){
+        Swap(y, x, y, my_placex);
+        m_
+        break;
+      }
+
+      // Flowing Left
+      ok = (speed > 0);
+      my_placex = x-speed;
+      for(int i = 1; i <= speed; i++){
+        if(m_world[y][x-i]->type != Type::Air){
+          ok = (i!=1);
+          my_placex = x - (i - 1);
           break;
         }
       }
@@ -186,7 +190,7 @@ void Processor::Update(int y, int x){
   m_curr->acceleration = 0;
 }
 
-void Processor::Swap(int y, int x, int y2, int x2){
+void Processor::Swap(unsigned y, unsigned x, unsigned y2, unsigned x2){
   m_world[y2][x2]->checked = true;
 
   Type tmp_type = std::move(m_world[y][x]->type);
@@ -199,16 +203,17 @@ void Processor::Swap(int y, int x, int y2, int x2){
 
   m_curr = m_world[y2][x2];
 
-  int firstx = x/ChunkSize;
-  int firsty = y/ChunkSize;
-  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] |= 2;
-  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] |= 2;
-
+  unsigned firstx = x>>SubChunkShift;
+  unsigned firsty = y>>SubChunkShift;
+//  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] |= ((1<<5)-1)<<1;
+//  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] |= ((1<<5)-1)<<1;
+//
+//  printf("Swaped at position: %u == %u", (y2>>4)*SubChunks + (x2>>4), firsty*SubChunks + firstx);
   for(int dy = -1; dy <= 1; dy++){
     for(int dx = -1; dx <= 1; dx++){
       if(firstx+dx>=0 && firstx+dx < SubChunks && firsty+dy>=0 && firsty+dy< SubChunks){
        // if(((x+SpeedLimit)>>4) == firstx+dx && ((y+SpeedLimit)>>4) == firsty+dy){
-          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] |= 2;
+          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 0xfe;
       //  }
       }
     }

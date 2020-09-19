@@ -1,11 +1,14 @@
 #include "../include/processor.hpp"
 
+extern float fastestElement;
+
 void Processor::Update(unsigned y, unsigned x){
   bool ok;
   unsigned potentialEnergy;
   unsigned my_placex, my_placey;
 
   m_curr = m_world[y][x];
+  fastestElement = (fastestElement > m_curr->speed) ? fastestElement : m_curr->speed;
   int speed = (int)m_curr->speed;
   switch(m_curr->type){
     case Air:
@@ -136,22 +139,6 @@ void Processor::Update(unsigned y, unsigned x){
         break;
       }
 
-      // Flowing Left
-      ok = (speed > 0);
-      my_placex = x-speed;
-      for(int i = 1; i <= speed; i++){
-        if(m_world[y][x-i]->type != Type::Air){
-          ok = (i!=1);
-          my_placex = x - (i - 1);
-          break;
-        }
-      }
-
-      if(ok){
-        Swap(y, x, y, my_placex);
-        break;
-      }
-
       // Flowing Right
       ok = (speed > 0);
       my_placex = x+speed;
@@ -165,6 +152,24 @@ void Processor::Update(unsigned y, unsigned x){
 
       if(ok){
         Swap(y, x, y, my_placex);
+        m_curr->acceleration -= Mu*WaterFriction;
+        break;
+      }
+
+      // Flowing Left
+      ok = (speed > 0);
+      my_placex = x-speed;
+      for(int i = 1; i <= speed; i++){
+        if(m_world[y][x-i]->type != Type::Air){
+          ok = (i!=1);
+          my_placex = x - (i - 1);
+          break;
+        }
+      }
+
+      if(ok){
+        Swap(y, x, y, my_placex);
+        m_curr->acceleration -= Mu*WaterFriction;
         break;
       }
 

@@ -1,6 +1,8 @@
 
 #define DEBUG
 
+float fastestElement;
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "include/globals.hpp"
@@ -56,7 +58,9 @@ int main(){
             printf("TPS: %d \t\t FPS: %f\n", TPS, fps);
           }else if(sf::Keyboard::B == currentEvent.key.code){
             manager.ToggleChunkBorders();
-          }else if( currentEvent.key.code >= sf::Keyboard::Num0 && currentEvent.key.code < sf::Keyboard::Num0 + Type::End){
+          }else if(sf::Keyboard::M == currentEvent.key.code){
+            printf("The fastest element's speed is : %f\n", fastestElement);
+          } else if( currentEvent.key.code >= sf::Keyboard::Num0 && currentEvent.key.code < sf::Keyboard::Num0 + Type::End){
             current = (Type)(currentEvent.key.code - sf::Keyboard::Num0);
           }
         break;
@@ -69,29 +73,26 @@ int main(){
         test_chunk(manager, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
     }
 
-
+    if (lag >= timePerUpdate){
+      fastestElement = 0;
+    }
 
     // Update Loop Runs exactly at TPS
-    while ( lag >= timePerUpdate )
-    {
+    while ( lag >= timePerUpdate ){
       manager.Update();
       lag -= timePerUpdate;
-      window.clear();
-
-      manager.Render(window);
-
-      window.display();
     }
 
     // Render
-
-}
+    window.clear();
+    manager.Render(window);
+    window.display();
+  }
 
   return EXIT_SUCCESS;
 }
 
 void test_chunk(WorldManager& manager, int x, int y){
-  puts("Test");
   int square_size = 20;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){

@@ -23,64 +23,71 @@ Chunk::Chunk()
 }
 
 void Chunk::Update(){
-  int k = 0;
-  for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
+
+  for(unsigned y = SubChunks - 1; ~y; y--){
+    if(y&1)
+    for(unsigned x = 0; x < SubChunks; x++){
+      if(m_sub_chunks[y*SubChunks + x]){
+        UpdateSubChunk(x, y);
+      }
+    }
+    else for(unsigned x = SubChunks - 1; ~x; x--){
+      if(m_sub_chunks[y*SubChunks + x]){
+        UpdateSubChunk(x, y);
+      }
+    }
+  }
+  
+  for(unsigned y = 0; y < SubChunks; y++){
+    for(unsigned x = 0; x < SubChunks; x++){
+      if(m_sub_chunks[y*SubChunks + x]){
+        for(unsigned i = y*SubChunkSize + ChunkOverlap; i < (y+1)*SubChunkSize + ChunkOverlap; i++){
+          for(unsigned j = x*SubChunkSize + ChunkOverlap; j < (x+1)*SubChunkSize + ChunkOverlap; j++){
+            m_data[j][i]->checked = false;
+          }
+        }
+      }
+    }
+  }
+
+   for(int i = 0; i < SubChunks*SubChunks; i++){
+    m_sub_chunks[i] >>= 1;
+  }
+/*
+  for(unsigned i = ChunkSize + ChunkOverlap - 1; i >= ChunkOverlap; i--){
     for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
-        k = (m_sub_chunks[(i>>SubChunkShift)*SubChunks + (j>>SubChunkShift)] > k) ? m_sub_chunks[(i>>SubChunkShift)*SubChunks + (j>>SubChunkShift)] : k;
-        if(m_sub_chunks[(i>>SubChunkShift)*SubChunks + (j>>SubChunkShift)]&1u == 0){
+       if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
         j+=SubChunkSize-1;
-        puts("ERRORRRRRRRRRRR ELEGEM VAN");
-      } else
-      if(m_data[i][j]->checked == false){
+      } else if(m_data[i][j]->checked == false){
         m_data[i][j]->checked = true;
         m_processor.Update(i, j);
       }
     }
   }
-  printf("The biggest is : %d", k);
-
-/*
-  for(unsigned y = 0; y < SubChunks; y++){
-    if(y&1)
-    for(unsigned x = 0; x < SubChunks; x++){
-      if(m_sub_chunks[y*SubChunks + x]&1){
-        UpdateSubChunk(x, y);
-      }
-    }
-    else for(unsigned x = SubChunks - 1; ~x; x--){
-      if(m_sub_chunks[y*SubChunks + x]&1){
-        UpdateSubChunk(x, y);
-      }
-    }
-  }
-*/
+  
   for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
     for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
-       if(m_sub_chunks[(i>>SubChunkShift)*SubChunks + (j>>SubChunkShift)]&1u == 0){
+      if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
           j+=SubChunkSize-1;
-       }else{
+       }else
           m_data[i][j]->checked = false;
-       }
+
     }
   }
 
   for(int i = 0; i < SubChunks*SubChunks; i++){
     m_sub_chunks[i] >>= 1;
   }
+  */
 }
 
 void Chunk::UpdateSubChunk(int x, int y){
-  for(unsigned i = y*SubChunkSize + ChunkOverlap; i < (y+1)*SubChunkSize + ChunkOverlap; i++){
+  for(unsigned i = (y+1)*SubChunkSize + ChunkOverlap-1; i >=y*SubChunkSize + ChunkOverlap; i < ; i++){
     for(unsigned j = x*SubChunkSize + ChunkOverlap; j < (x+1)*SubChunkSize + ChunkOverlap; j++){
       if(m_data[i][j]->checked == false){
         m_data[i][j]->checked = true;
         m_processor.Update(i, j);
       }
-    }
-  }
-  for(unsigned i = y*SubChunkSize + ChunkOverlap; i < (y+1)*SubChunkSize + ChunkOverlap; i++){
-    for(unsigned j = x*SubChunkSize + ChunkOverlap; j < (x+1)*SubChunkSize + ChunkOverlap; j++){
-      m_data[j][i]->checked = false;
     }
   }
 }

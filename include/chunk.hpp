@@ -36,7 +36,6 @@ class Chunk
     sf::Sprite m_sprite;
 
     void UpdateColors();
-    void UpdateSubChunk(int x, int y);
 
 };
 

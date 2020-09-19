@@ -23,11 +23,17 @@ Chunk::Chunk()
 }
 
 void Chunk::Update(){
-
   for(unsigned i = ChunkSize + ChunkOverlap - 1; i >= ChunkOverlap; i--){
-    for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
+    if(i&1) for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
        if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
         j+=SubChunkSize-1;
+      } else if(m_data[i][j]->checked == false){
+        m_data[i][j]->checked = true;
+        m_processor.Update(i, j);
+      }
+    } else for(unsigned j = ChunkSize + ChunkOverlap - 1; j >= ChunkOverlap; j--){
+       if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
+        j-=SubChunkSize-1;
       } else if(m_data[i][j]->checked == false){
         m_data[i][j]->checked = true;
         m_processor.Update(i, j);
@@ -35,21 +41,6 @@ void Chunk::Update(){
     }
   }
 
-/*
-  for(unsigned y = 0; y < SubChunks; y++){
-    if(y&1)
-    for(unsigned x = 0; x < SubChunks; x++){
-      if(m_sub_chunks[y*SubChunks + x]&1){
-        UpdateSubChunk(x, y);
-      }
-    }
-    else for(unsigned x = SubChunks - 1; ~x; x--){
-      if(m_sub_chunks[y*SubChunks + x]&1){
-        UpdateSubChunk(x, y);
-      }
-    }
-  }
-*/
   for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
     for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
       if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
@@ -63,22 +54,7 @@ void Chunk::Update(){
   for(int i = 0; i < SubChunks*SubChunks; i++){
     m_sub_chunks[i] >>= 1;
   }
-}
 
-void Chunk::UpdateSubChunk(int x, int y){
-  for(unsigned i = y*SubChunkSize + ChunkOverlap; i < (y+1)*SubChunkSize + ChunkOverlap; i++){
-    for(unsigned j = x*SubChunkSize + ChunkOverlap; j < (x+1)*SubChunkSize + ChunkOverlap; j++){
-      if(m_data[i][j]->checked == false){
-        m_data[i][j]->checked = true;
-        m_processor.Update(i, j);
-      }
-    }
-  }
-  for(unsigned i = y*SubChunkSize + ChunkOverlap; i < (y+1)*SubChunkSize + ChunkOverlap; i++){
-    for(unsigned j = x*SubChunkSize + ChunkOverlap; j < (x+1)*SubChunkSize + ChunkOverlap; j++){
-      m_data[j][i]->checked = false;
-    }
-  }
 }
 
 void Chunk::UpdateColors(){
