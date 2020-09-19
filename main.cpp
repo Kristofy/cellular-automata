@@ -2,15 +2,16 @@
 #define DEBUG
 
 #include <SFML/Graphics.hpp>
-#include "include/globals.hpp"
-#include "worldmanager.hpp"
-#include "type.hpp"
 #include <iostream>
+#include "include/globals.hpp"
+#include "include/worldmanager.hpp"
+#include "include/type.hpp"
+#include "include/util.hpp"
 #include "include/chunk.hpp"
 
 Type current = Type::Sand;
 
-void test_chunk(WorldManager& chunk, int x, int y);
+void test_chunk(WorldManager& manager, int x, int y);
 
 int main(){
 
@@ -73,16 +74,16 @@ int main(){
     // Update Loop Runs exactly at TPS
     while ( lag >= timePerUpdate )
     {
-    manager.Update();
-    lag -= timePerUpdate;
+      manager.Update();
+      lag -= timePerUpdate;
+      window.clear();
+
+      manager.Render(window);
+
+      window.display();
     }
 
     // Render
-    window.clear();
-
-    manager.Render(window);
-
-    window.display();
 
 }
 
@@ -90,6 +91,7 @@ int main(){
 }
 
 void test_chunk(WorldManager& manager, int x, int y){
+  puts("Test");
   int square_size = 20;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){

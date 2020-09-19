@@ -1,9 +1,9 @@
 #include "../include/processor.hpp"
 
-void Processor::Update(int y, int x){
+void Processor::Update(unsigned y, unsigned x){
   bool ok;
-  int potentialEnergy;
-  int my_placex, my_placey;
+  unsigned potentialEnergy;
+  unsigned my_placex, my_placey;
 
   m_curr = m_world[y][x];
   int speed = (int)m_curr->speed;
@@ -36,7 +36,7 @@ void Processor::Update(int y, int x){
       my_placey = y+potentialEnergy;
       my_placex = x+potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
+        if(m_world[y+i][x+i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x + (i - 1);
@@ -55,7 +55,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x - potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
+        if(m_world[y+i][x-i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x - (i - 1);
@@ -84,7 +84,7 @@ void Processor::Update(int y, int x){
       // Falling Downwards
       my_placey = y + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x]->type != Type::Air /*|| m_world[y+i][x]->moved*/){
+        if(m_world[y+i][x]->type != Type::Air){
           ok = (i != 1);
           my_placey = y+(i-1);
           break;
@@ -102,7 +102,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
+        if(m_world[y+i][x+i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x + (i - 1);
@@ -122,7 +122,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x - potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
+        if(m_world[y+i][x-i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x - (i - 1);
@@ -140,7 +140,7 @@ void Processor::Update(int y, int x){
       ok = (speed > 0);
       my_placex = x-speed;
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x-i]->type != Type::Air || m_world[y][x-i]->moved){
+        if(m_world[y][x-i]->type != Type::Air){
           ok = (i!=1);
           my_placex = x - (i - 1);
           break;
@@ -156,7 +156,7 @@ void Processor::Update(int y, int x){
       ok = (speed > 0);
       my_placex = x+speed;
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x+i]->type != Type::Air || m_world[y][x+i]->moved){
+        if(m_world[y][x+i]->type != Type::Air){
           ok = (i!=1);
           my_placex = x + (i - 1);
           break;
@@ -186,8 +186,7 @@ void Processor::Update(int y, int x){
   m_curr->acceleration = 0;
 }
 
-void Processor::Swap(int y, int x, int y2, int x2){
-  m_world[y][x]->moved = true;
+void Processor::Swap(unsigned y, unsigned x, unsigned y2, unsigned x2){
   m_world[y2][x2]->checked = true;
 
   Type tmp_type = std::move(m_world[y][x]->type);
@@ -200,21 +199,20 @@ void Processor::Swap(int y, int x, int y2, int x2){
 
   m_curr = m_world[y2][x2];
 
-  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] = 1;
-  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] = 1;
-
-  /*
-  int firstx = x>>4;
-  int firsty = y>>4;
+  unsigned firstx = x>>SubChunkShift;
+  unsigned firsty = y>>SubChunkShift;
+//  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] |= ((1<<5)-1)<<1;
+//  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] |= ((1<<5)-1)<<1;
+//
+//  printf("Swaped at position: %u == %u", (y2>>4)*SubChunks + (x2>>4), firsty*SubChunks + firstx);
   for(int dy = -1; dy <= 1; dy++){
     for(int dx = -1; dx <= 1; dx++){
       if(firstx+dx>=0 && firstx+dx < SubChunks && firsty+dy>=0 && firsty+dy< SubChunks){
        // if(((x+SpeedLimit)>>4) == firstx+dx && ((y+SpeedLimit)>>4) == firsty+dy){
-          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 1;
+          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 0xfe;
       //  }
       }
     }
   }
-  */
 
 }

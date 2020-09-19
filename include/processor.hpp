@@ -7,21 +7,22 @@
 #include "util.hpp"
 #include <cstdio>
 #include <iostream>
-#include <bitset>
+#include <array>
 
 class Processor
 {
   public:
-    Processor(ExtGridPointer& link, std::bitset<SubChunks*SubChunks>& subChunksLink) :m_world(link), m_sub_chunks(subChunksLink) {}
+    Processor(ExtGridPointer& link, std::array<uint8_t, SubChunks*SubChunks>& subChunksLink) :m_world(link), m_sub_chunks(subChunksLink)
+    {}
 
-    void Update(int y, int x);
+    void Update(unsigned y, unsigned x);
 
   private:
     ExtGridPointer& m_world;
-    std::bitset<SubChunks*SubChunks>& m_sub_chunks;
+    std::array<uint8_t, SubChunks*SubChunks>& m_sub_chunks;
     Entity* m_curr;
 
-    void Swap(int y, int x, int y2, int x2);
+    void Swap(unsigned y, unsigned x, unsigned y2, unsigned x2);
 
 };
 

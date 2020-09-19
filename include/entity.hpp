@@ -16,7 +16,6 @@ class Entity
     float speed;
     float acceleration;
 
-    bool moved;
     bool checked;
 
 };

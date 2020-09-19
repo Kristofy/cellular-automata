@@ -36,7 +36,7 @@ void Processor::Update(int y, int x){
       my_placey = y+potentialEnergy;
       my_placex = x+potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
+        if(m_world[y+i][x+i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x + (i - 1);
@@ -55,7 +55,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x - potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
+        if(m_world[y+i][x-i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x - (i - 1);
@@ -84,7 +84,7 @@ void Processor::Update(int y, int x){
       // Falling Downwards
       my_placey = y + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x]->type != Type::Air /*|| m_world[y+i][x]->moved*/){
+        if(m_world[y+i][x]->type != Type::Air){
           ok = (i != 1);
           my_placey = y+(i-1);
           break;
@@ -102,7 +102,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air || m_world[y+i][x+i]->moved){
+        if(m_world[y+i][x+i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x + (i - 1);
@@ -122,7 +122,7 @@ void Processor::Update(int y, int x){
       my_placey = y + potentialEnergy;
       my_placex = x - potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air || m_world[y+i][x-i]->moved){
+        if(m_world[y+i][x-i]->type != Type::Air){
           ok = (i != 1);
           my_placey = y + (i - 1);
           my_placex = x - (i - 1);
@@ -140,7 +140,7 @@ void Processor::Update(int y, int x){
       ok = (speed > 0);
       my_placex = x-speed;
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x-i]->type != Type::Air || m_world[y][x-i]->moved){
+        if(m_world[y][x-i]->type != Type::Air){
           ok = (i!=1);
           my_placex = x - (i - 1);
           break;
@@ -156,7 +156,7 @@ void Processor::Update(int y, int x){
       ok = (speed > 0);
       my_placex = x+speed;
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x+i]->type != Type::Air || m_world[y][x+i]->moved){
+        if(m_world[y][x+i]->type != Type::Air){
           ok = (i!=1);
           my_placex = x + (i - 1);
           break;
@@ -187,7 +187,6 @@ void Processor::Update(int y, int x){
 }
 
 void Processor::Swap(int y, int x, int y2, int x2){
-  m_world[y][x]->moved = true;
   m_world[y2][x2]->checked = true;
 
   Type tmp_type = std::move(m_world[y][x]->type);
@@ -200,14 +199,16 @@ void Processor::Swap(int y, int x, int y2, int x2){
 
   m_curr = m_world[y2][x2];
 
-  int firstx = x>>4;
-  int firsty = y>>4;
-  m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 1;
+  int firstx = x/ChunkSize;
+  int firsty = y/ChunkSize;
+  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] |= 2;
+  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] |= 2;
+
   for(int dy = -1; dy <= 1; dy++){
     for(int dx = -1; dx <= 1; dx++){
       if(firstx+dx>=0 && firstx+dx < SubChunks && firsty+dy>=0 && firsty+dy< SubChunks){
        // if(((x+SpeedLimit)>>4) == firstx+dx && ((y+SpeedLimit)>>4) == firsty+dy){
-          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 1;
+          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] |= 2;
       //  }
       }
     }

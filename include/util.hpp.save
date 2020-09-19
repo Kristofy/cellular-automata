@@ -16,6 +16,16 @@ enum Directions{
   Top_Left = 7
 };
 
+template<unsigned I>
+struct TwoPow{
+  static unsigned value = TwoPow<(I<<1)>::value + 1;
+};
+
+template<>
+struct TwoPow<0>{
+  static unsigned value = 1;
+};
+
 typedef std::array<std::array<Entity*, ChunkSize + 2*ChunkOverlap>, ChunkSize+2*ChunkOverlap> ExtGridPointer;
 
 #endif // UTIL_H_INCLUDED

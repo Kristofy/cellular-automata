@@ -2,7 +2,8 @@
 #define CHUNK_H
 
 #include <SFML/Graphics.hpp>
-#include <bitset>
+#include <array>
+#include <memory>
 #include "globals.hpp"
 #include "entity.hpp"
 #include "processor.hpp"
@@ -29,7 +30,7 @@ class Chunk
     uint32_t* m_color_data;
     Processor m_processor;
 
-    std::bitset<SubChunks*SubChunks> m_sub_chunk;
+    std::array<uint8_t, SubChunks*SubChunks> m_sub_chunks;
 
     sf::Texture m_texture;
     sf::Sprite m_sprite;

@@ -1,6 +1,14 @@
 #ifndef GLOBALS_H_INCLUDED
 #define GLOBALS_H_INCLUDED
 
+template<unsigned I> struct TwoPow{
+  static const unsigned value = TwoPow<(I>>1)>::value + 1;
+};
+template<> struct TwoPow<1>{
+  static const unsigned value = 0;
+};
+
+// TODO: ChunkDiv, ChunkMod, SubChunkDiv, SubChunkMod(?), static assert pow 2
 
 const unsigned int TPS = 30;
 const unsigned int CameraWidth = 256;
@@ -9,6 +17,7 @@ const char * const Title = "Testing";
 const unsigned int ChunkSize = 256;
 const unsigned int SubChunkSize = 16;
 const unsigned int SubChunks = ChunkSize / SubChunkSize;
+const unsigned int SubChunkShift = TwoPow<SubChunkSize>::value;
 const unsigned int ChunkOverlap = 6;
 const unsigned int SpeedLimit = ChunkOverlap;
 const unsigned int HorizontalChunks = 1;
