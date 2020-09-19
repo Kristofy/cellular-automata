@@ -12,67 +12,49 @@ WorldManager::WorldManager()
     }
   }
 
-  std::cout << "Binding all of the Existing Right, Bottom Right and Bottom chunk parts Together\n";
-  // Binding all of the Existing Right, Bottom Right and Bottom chunk parts Together
-  for(int i = 0; i < VerticalChunks-1; i++){
+  std::cout << "Binding parts\n";
+  
+  // Binding Right parts
+  for(int i = 0; i < VerticalChunks; i++){
     for(int j = 0; j < HorizontalChunks-1; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j + 1]);
+    }
+  }
+  
+  // Binding Bottom Right parts
+  for(int i = 0; i < VerticalChunks-1; i++){
+    for(int j = 0; j < HorizontalChunks-1; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom_Right, m_chunks[(i+1)*HorizontalChunks + j + 1]);
+    }
+  }
+  
+  // Binding Bottom parts
+  for(int i = 0; i < VerticalChunks-1; i++){
+    for(int j = 0; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom, m_chunks[(i+1)*HorizontalChunks + j]);
     }
   }
-
-  std::cout << "Binding all of the Existing Left, Top Left and Top chunk parts Together\n";
-  // Binding all of the Existing Left, Top Left and Top chunk parts Together
-  for(int i = 1; i < VerticalChunks; i++){
-    for(int j = 1; j < HorizontalChunks; j++){
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Left, m_chunks[i*HorizontalChunks + j - 1]);
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Top_Left, m_chunks[(i-1)*HorizontalChunks + j - 1]);
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Top, m_chunks[(i-1)*HorizontalChunks + j]);
-    }
-  }
-
-  std::cout << "Binding all of the Existing Bottom Lefts\n";
-  // Binding all of the Existing Bottom Lefts
+  
+  // Binding Bottom Left parts
   for(int i = 0; i < VerticalChunks - 1; i++){
     for(int j = 1; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom_Left, m_chunks[(i+1)*HorizontalChunks + j - 1]);
     }
   }
-
-  std::cout << "Binding all of the Existing Top Rights\n";
-  // Binding all of the Existing Top Rights
+  
+  // Binding Left parts
   for(int i = 1; i < VerticalChunks; i++){
-    for(int j = 0; j < HorizontalChunks - 1; j++){
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom_Left, m_chunks[(i-1)*HorizontalChunks + j + 1]);
+    for(int j = 0; j < HorizontalChunks; j++){
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j - 1]);
     }
   }
-
-  std::cout << "Fixing Bottom middle\n";
-  // Fixing Bottom middle
-  for(int j = 0; j < HorizontalChunks - 1; j++){
-    m_chunks[(VerticalChunks-1)*HorizontalChunks + j].Bind(Directions::Right, m_chunks[(VerticalChunks-1)*HorizontalChunks + j + 1]);
+  // Binding Top Left parts
+  for(int i = 0; i < VerticalChunks; i++){
+    for(int j = 0; j < HorizontalChunks-1; j++){
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j + 1]);
+    }
   }
-
-
-  std::cout << "Fixing Left Middle\n";
-  // Fixing Left Middle
-  for(int i = 1; i < VerticalChunks; i++){
-    m_chunks[i*HorizontalChunks].Bind(Directions::Top, m_chunks[(i-1)*HorizontalChunks]);
-  }
-
-  std::cout << "Fixing Top Middle\n";
-  // Fixing Top Middle
-  for(int j = 1; j < HorizontalChunks; j++){
-    m_chunks[j].Bind(Directions::Left, m_chunks[j - 1]);
-  }
-
-  std::cout << "Fixing Right Middle\n";
-  // Fixing Right Middle
-  for(int i = 0; i < VerticalChunks - 1; i++){
-    m_chunks[i*HorizontalChunks + HorizontalChunks - 1].Bind(Directions::Bottom, m_chunks[(i+1)*HorizontalChunks + HorizontalChunks - 1]);
-  }
-
+  
   std::cout << "Placing the border\n";
   // Placing the border
   for(int j = 0; j < HorizontalChunks; j++){
@@ -142,7 +124,7 @@ void WorldManager::Render(sf::RenderTarget& window){
 }
 
 Entity& WorldManager::Get(int i, int j){
-  return m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize][j%ChunkSize];
+  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize][j%ChunkSize];
 }
 
 void WorldManager::ToggleChunkBorders(){
