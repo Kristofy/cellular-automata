@@ -9,10 +9,14 @@
 #include <iostream>
 #include <array>
 
+class WorldManager;
+
 class Processor
 {
+  friend class Chunk;
   public:
-    Processor(ExtGridPointer& link, std::array<uint8_t, SubChunks*SubChunks>& subChunksLink) :m_world(link), m_sub_chunks(subChunksLink)
+    Processor(ExtGridPointer& link, std::array<uint8_t, SubChunks*SubChunks>& subChunksLink)
+    :m_world(link), m_sub_chunks(subChunksLink)
     {}
 
     void Update(unsigned y, unsigned x);
@@ -21,8 +25,12 @@ class Processor
     ExtGridPointer& m_world;
     std::array<uint8_t, SubChunks*SubChunks>& m_sub_chunks;
     Entity* m_curr;
+    int m_world_pos_x, m_world_pos_y;
+    WorldManager* m_manager;
 
-    void Swap(unsigned y, unsigned x, unsigned y2, unsigned x2);
+    void Swap(int y, int x, int y2, int x2);
+    void SetWorldPosition(int x, int y);
+    void SetManager(WorldManager* manager);
 
 };
 

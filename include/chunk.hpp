@@ -11,12 +11,15 @@
 #include "color.hpp"
 #include "util.hpp"
 
+class WorldManager;
+
 class Chunk
 {
   friend class WorldManager;
 
   public:
     Chunk();
+    ~Chunk();
 
     void Update();
     void Render(sf::RenderTarget& window);
@@ -29,13 +32,17 @@ class Chunk
     ExtGridPointer m_data;
     uint32_t* m_color_data;
     Processor m_processor;
+    int m_world_pos_x, m_world_pos_y;
 
+    WorldManager* m_manager;
     std::array<uint8_t, SubChunks*SubChunks> m_sub_chunks;
 
     sf::Texture m_texture;
     sf::Sprite m_sprite;
 
     void UpdateColors();
+    void SetWorldPosition(int x, int y);
+    void SetManager(WorldManager* manager);
 
 };
 

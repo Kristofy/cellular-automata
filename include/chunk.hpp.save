@@ -29,14 +29,17 @@ class Chunk
     ExtGridPointer m_data;
     uint32_t* m_color_data;
     Processor m_processor;
+    unsigned m_world_pos_x, m_world_pos_y;
 
-    std::array<bool, SubChunks*SubChunks> m_sub_chunks;
+    WorldManager* m_manager;
+    std::array<uint8_t, SubChunks*SubChunks> m_sub_chunks;
 
     sf::Texture m_texture;
     sf::Sprite m_sprite;
 
     void UpdateColors();
-    void UpdateSubChunk(int x, int y);
+    void SetWorldPosition(unsigned x, unsigned y);
+    void SetManager(WorldManager* manager);
 
 };
 

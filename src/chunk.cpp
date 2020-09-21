@@ -22,6 +22,25 @@ Chunk::Chunk()
 
 }
 
+Chunk::~Chunk(){
+  for(unsigned i = ChunkOverlap; i < ChunkSize + ChunkOverlap; i++){
+    for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
+      delete m_data[i][j];
+    }
+  }
+}
+
+void Chunk::SetManager(WorldManager* manager){
+  m_manager = manager;
+  m_processor.SetManager(manager);
+}
+
+void Chunk::SetWorldPosition(int x, int y){
+  m_world_pos_x = x;
+  m_world_pos_y = y;
+  m_processor.SetWorldPosition(x, y);
+}
+
 void Chunk::Update(){
   for(unsigned i = ChunkSize + ChunkOverlap - 1; i >= ChunkOverlap; i--){
     if(i&1) for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
@@ -47,7 +66,6 @@ void Chunk::Update(){
           j+=SubChunkSize-1;
        }else
           m_data[i][j]->checked = false;
-
     }
   }
 
@@ -73,7 +91,7 @@ void Chunk::Render(sf::RenderTarget& window){
   sf::RectangleShape highlight(sf::Vector2f(SubChunkSize, SubChunkSize));
   for(int i = 0; i < SubChunks; i++){
     for(int j = 0; j < SubChunks; j++){
-      if(m_sub_chunks[i*SubChunks + j]&1){
+      if(m_sub_chunks[i*SubChunks + j]){
         highlight.setPosition(j*SubChunkSize + m_sprite.getPosition().x, i*SubChunkSize + m_sprite.getPosition().y);
         highlight.setFillColor(sf::Color(255,0,0,100));
         window.draw(highlight);
@@ -227,6 +245,6 @@ void Chunk::Bind(Directions Side, Chunk& other){
 
 void Chunk::Refresh(){
   for(uint8_t& p : m_sub_chunks){
-    p |= 1;
+    p |= UpdateMask;
   }
 }

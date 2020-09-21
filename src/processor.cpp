@@ -1,4 +1,5 @@
 #include "../include/processor.hpp"
+#include "../include/worldmanager.hpp"
 
 extern float fastestElement;
 
@@ -191,7 +192,7 @@ void Processor::Update(unsigned y, unsigned x){
   m_curr->acceleration = 0;
 }
 
-void Processor::Swap(unsigned y, unsigned x, unsigned y2, unsigned x2){
+void Processor::Swap(int y, int x, int y2, int x2){
   m_world[y2][x2]->checked = true;
 
   Type tmp_type = std::move(m_world[y][x]->type);
@@ -204,20 +205,30 @@ void Processor::Swap(unsigned y, unsigned x, unsigned y2, unsigned x2){
 
   m_curr = m_world[y2][x2];
 
-  unsigned firstx = x>>SubChunkShift;
-  unsigned firsty = y>>SubChunkShift;
-//  m_sub_chunks[(y>>4)*SubChunks + (x>>4)] |= ((1<<5)-1)<<1;
-//  m_sub_chunks[(y2>>4)*SubChunks + (x2>>4)] |= ((1<<5)-1)<<1;
-//
-//  printf("Swaped at position: %u == %u", (y2>>4)*SubChunks + (x2>>4), firsty*SubChunks + firstx);
+  int firstx = (x - ChunkOverlap)>>SubChunkShift;
+  int firsty = (y - ChunkOverlap)>>SubChunkShift;
+  // TODO: Fix it, its working but ugly and slow
   for(int dy = -1; dy <= 1; dy++){
     for(int dx = -1; dx <= 1; dx++){
-      if(firstx+dx>=0 && firstx+dx < SubChunks && firsty+dy>=0 && firsty+dy< SubChunks){
-       // if(((x+SpeedLimit)>>4) == firstx+dx && ((y+SpeedLimit)>>4) == firsty+dy){
-          m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = 0xfe;
-      //  }
-      }
+    //    if(firstx+dx == ((x - ChunkOverlap + dx*SpeedLimit)>>SubChunkShift) && firsty+dy == ((y - ChunkOverlap + dy*SpeedLimit)>>SubChunkShift )){
+          if(firstx+dx>=0 && firstx+dx < SubChunks && firsty+dy>=0 && firsty+dy < SubChunks){
+            m_sub_chunks[(firsty+dy)*SubChunks + firstx+dx] = UpdateMask;
+          }else{
+            if( abs(dx) + abs(dy) == 1){
+              m_manager->UpdateSubChunk(m_world_pos_x + dx, m_world_pos_y + dy, (firstx+dx+(int)SubChunks)%SubChunks, (firsty+dy+(int)SubChunks)%SubChunks );
+            }
+          }
+//        }
     }
   }
 
+}
+
+void Processor::SetWorldPosition(int x, int y){
+  m_world_pos_x = x;
+  m_world_pos_y = y;
+}
+
+void Processor::SetManager(WorldManager* manager){
+  m_manager = manager;
 }

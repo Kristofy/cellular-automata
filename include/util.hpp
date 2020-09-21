@@ -6,14 +6,15 @@
 #include <array>
 
 enum Directions{
-  Left = 0,
-  Bottom_Left = 1,
-  Bottom = 2,
-  Bottom_Right = 3,
-  Right = 4,
-  Top_Right = 5,
-  Top = 6,
-  Top_Left = 7
+  Top_Right     = 0,
+  Top           = 1,
+  Top_Left      = 2,
+  Right         = 3,
+  Center        = 4,
+  Left          = 5,
+  Bottom_Left   = 6,
+  Bottom        = 7,
+  Bottom_Right  = 8,
 };
 
 typedef std::array<std::array<Entity*, ChunkSize + 2*ChunkOverlap>, ChunkSize+2*ChunkOverlap> ExtGridPointer;

@@ -93,13 +93,13 @@ int main(){
 }
 
 void test_chunk(WorldManager& manager, int x, int y){
-  int square_size = 20;
+  int square_size = 50;
   for(int i = 0; i < square_size; i++){
       for(int j = 0; j < square_size; j++){
           manager.Get(y-square_size/2+i,x-square_size/2+j).type = current;
+          manager.Refresh(y-square_size/2+i, x-square_size/2+j);
       }
   }
-  manager.RefreshAll();
 }
 
 

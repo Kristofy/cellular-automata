@@ -9,52 +9,69 @@ WorldManager::WorldManager()
   for(int i = 0; i < VerticalChunks; i++){
     for(int j = 0; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].SetPosition(i*ChunkSize, j*ChunkSize);
+      m_chunks[i*HorizontalChunks + j].SetWorldPosition(j, i);
+      m_chunks[i*HorizontalChunks + j].SetManager(this);
     }
   }
 
   std::cout << "Binding parts\n";
-  
+
   // Binding Right parts
   for(int i = 0; i < VerticalChunks; i++){
-    for(int j = 0; j < HorizontalChunks-1; j++){
+    for(int j = 0; j < HorizontalChunks - 1; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j + 1]);
     }
   }
-  
+
   // Binding Bottom Right parts
-  for(int i = 0; i < VerticalChunks-1; i++){
-    for(int j = 0; j < HorizontalChunks-1; j++){
+  for(int i = 0; i < VerticalChunks - 1; i++){
+    for(int j = 0; j < HorizontalChunks - 1; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom_Right, m_chunks[(i+1)*HorizontalChunks + j + 1]);
     }
   }
-  
+
   // Binding Bottom parts
-  for(int i = 0; i < VerticalChunks-1; i++){
+  for(int i = 0; i < VerticalChunks - 1; i++){
     for(int j = 0; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom, m_chunks[(i+1)*HorizontalChunks + j]);
     }
   }
-  
+
   // Binding Bottom Left parts
   for(int i = 0; i < VerticalChunks - 1; i++){
     for(int j = 1; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].Bind(Directions::Bottom_Left, m_chunks[(i+1)*HorizontalChunks + j - 1]);
     }
   }
-  
+
   // Binding Left parts
+  for(int i = 0; i < VerticalChunks; i++){
+    for(int j = 1; j < HorizontalChunks; j++){
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Left, m_chunks[i*HorizontalChunks + j - 1]);
+    }
+  }
+
+  // Binding Top Left parts
+  for(int i = 1; i < VerticalChunks; i++){
+    for(int j = 1; j < HorizontalChunks; j++){
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Top_Left, m_chunks[(i-1)*HorizontalChunks + j - 1]);
+    }
+  }
+
+  // Binding Top parts
   for(int i = 1; i < VerticalChunks; i++){
     for(int j = 0; j < HorizontalChunks; j++){
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j - 1]);
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Top, m_chunks[(i-1)*HorizontalChunks + j]);
     }
   }
-  // Binding Top Left parts
-  for(int i = 0; i < VerticalChunks; i++){
-    for(int j = 0; j < HorizontalChunks-1; j++){
-      m_chunks[i*HorizontalChunks + j].Bind(Directions::Right, m_chunks[i*HorizontalChunks + j + 1]);
+
+  // Binding Top Right parts
+  for(int i = 1; i < VerticalChunks; i++){
+    for(int j = 0; j < HorizontalChunks - 1; j++){
+      m_chunks[i*HorizontalChunks + j].Bind(Directions::Top_Right, m_chunks[(i-1)*HorizontalChunks + j + 1]);
     }
   }
-  
+
   std::cout << "Placing the border\n";
   // Placing the border
   for(int j = 0; j < HorizontalChunks; j++){
@@ -124,9 +141,25 @@ void WorldManager::Render(sf::RenderTarget& window){
 }
 
 Entity& WorldManager::Get(int i, int j){
-  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize][j%ChunkSize];
+  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize + ChunkOverlap][j%ChunkSize + ChunkOverlap];
+}
+
+void WorldManager::Refresh(int i, int j){
+  m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_sub_chunks[i%ChunkSize * ]
 }
 
 void WorldManager::ToggleChunkBorders(){
   m_isBordersVisible = !m_isBordersVisible;
+}
+
+void WorldManager::RefreshAll(){
+  for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
+    m_chunks[i].Refresh();
+  }
+}
+
+void WorldManager::UpdateSubChunk(int x, int y, int subX, int subY){
+    if(x >= 0 && x < HorizontalChunks && y >= 0 && y < VerticalChunks){
+      m_chunks[y*HorizontalChunks + x].m_sub_chunks[subY*SubChunks + subX] |= UpdateMask;
+    }
 }

@@ -14,9 +14,10 @@ class WorldManager
     void Update();
     void Render(sf::RenderTarget& window);
     Entity& Get(int i, int j);
+    void Refresh(int i, int j);
     void ToggleChunkBorders();
     void RefreshAll();
-
+    void UpdateSubChunk(int x, int y, int subX, int subY);
   private:
     Chunk m_chunks[HorizontalChunks*VerticalChunks];
     Entity m_nope;

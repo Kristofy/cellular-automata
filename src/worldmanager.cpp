@@ -9,6 +9,8 @@ WorldManager::WorldManager()
   for(int i = 0; i < VerticalChunks; i++){
     for(int j = 0; j < HorizontalChunks; j++){
       m_chunks[i*HorizontalChunks + j].SetPosition(i*ChunkSize, j*ChunkSize);
+      m_chunks[i*HorizontalChunks + j].SetWorldPosition(j, i);
+      m_chunks[i*HorizontalChunks + j].SetManager(this);
     }
   }
 
@@ -124,8 +126,12 @@ WorldManager::WorldManager()
 }
 
 void WorldManager::Update(){
-  for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
-    m_chunks[i].Update();
+  for(int i = VerticalChunks-1; i >= 0; i--){
+    if(i&1) for(int j = 0; j < HorizontalChunks; j++){
+      m_chunks[i*VerticalChunks + j].Update();
+    }else for(int j = HorizontalChunks - 1; j >= 0; j--){
+      m_chunks[i*VerticalChunks + j].Update();
+    }
   }
 }
 
@@ -139,7 +145,11 @@ void WorldManager::Render(sf::RenderTarget& window){
 }
 
 Entity& WorldManager::Get(int i, int j){
-  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize + ChunkOverlap][j%ChunkSize + ChunkOverlap];
+  return *m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_data[(i&ChunkMod) + ChunkOverlap][(j&ChunkMod) + ChunkOverlap];
+}
+
+void WorldManager::Refresh(int i, int j){
+  m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_sub_chunks[((i&ChunkMod)>>SubChunkShift) * SubChunks + (((j&ChunkMod)>>SubChunkShift)&SubChunkMod)] |= UpdateMask;
 }
 
 void WorldManager::ToggleChunkBorders(){
@@ -150,4 +160,10 @@ void WorldManager::RefreshAll(){
   for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
     m_chunks[i].Refresh();
   }
+}
+
+void WorldManager::UpdateSubChunk(int x, int y, int subX, int subY){
+    if(x >= 0 && x < HorizontalChunks && y >= 0 && y < VerticalChunks){
+      m_chunks[y*HorizontalChunks + x].m_sub_chunks[subY*SubChunks + subX] |= UpdateMask;
+    }
 }
