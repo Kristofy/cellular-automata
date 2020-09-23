@@ -121,10 +121,6 @@ int main(){
       manager.ToggleChunkBorders();
     }
 
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-
-    }
-
     if (lag >= timePerUpdate){
       fastestElement = 0;
     }
@@ -153,12 +149,11 @@ int main(){
       if(border != manager.IsBorderVisible()) manager.ToggleChunkBorders();
       ImGui::End();
     }
-  c.setPosition(window.mapPixelToCoords(sf::Mouse::getPosition()));
+
 //    ImGui::ShowDemoWindow();
     // Render
     window.clear();
     manager.Render(window);
-    window.draw(c);
     ImGui::SFML::Render(window);
     window.display();
 

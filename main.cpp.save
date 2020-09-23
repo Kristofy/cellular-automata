@@ -113,15 +113,12 @@ int main(){
       window.setView(camera);
     }
     if(ImGui::SFML::isButtonPressed(sf::Mouse::Left, io)){
-        printf("%d", (camera.getCenter().x - ScreenCenter.x + mouse.x))
+      int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
+      int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
+      test_chunk(manager, x, y);
     }
     if(ImGui::SFML::isKeyPressed(sf::Keyboard::B, io)){
       manager.ToggleChunkBorders();
-    }
-
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-      
-     //   test_chunk(manager, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
     }
 
     if (lag >= timePerUpdate){
@@ -152,12 +149,11 @@ int main(){
       if(border != manager.IsBorderVisible()) manager.ToggleChunkBorders();
       ImGui::End();
     }
-  c.setPosition(window.mapPixelToCoords(sf::Mouse::getPosition()));
+
 //    ImGui::ShowDemoWindow();
     // Render
     window.clear();
     manager.Render(window);
-    window.draw(c);
     ImGui::SFML::Render(window);
     window.display();
 
