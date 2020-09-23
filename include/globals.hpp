@@ -20,11 +20,11 @@ const unsigned int TPS = 60;
 const char * const Title = "Testing";
 const unsigned int CameraWidth = 512;
 const unsigned int CameraHeight = 512;
-const unsigned int ChunkSize = 256;
+const unsigned int ChunkSize = 512;
 const unsigned int SubChunkSize = 16;
 const unsigned int ChunkOverlap = 6;
-const unsigned int HorizontalChunks = 2;
-const unsigned int VerticalChunks = 2;
+const unsigned int HorizontalChunks = 1;
+const unsigned int VerticalChunks = 1;
 const unsigned int BaseEnergy = 2;
 const std::uint8_t UpdateMask = 0x0f;
 

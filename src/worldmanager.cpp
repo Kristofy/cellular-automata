@@ -167,3 +167,7 @@ void WorldManager::UpdateSubChunk(int x, int y, int subX, int subY){
       m_chunks[y*HorizontalChunks + x].m_sub_chunks[subY*SubChunks + subX] |= UpdateMask;
     }
 }
+
+bool WorldManager::IsBorderVisible(){
+  return m_isBordersVisible;
+}

@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-lGL -lGLU" />
 					<Add directory="include" />
 				</Compiler>
 			</Target>
@@ -36,6 +37,8 @@
 			<Add directory="../../SFML/SFML-2.5.1/include" />
 		</Compiler>
 		<Linker>
+			<Add option="-lopengl32" />
+			<Add library="../../SFML/SFML-2.5.1/lib/libopenal32.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-main.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-system.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-graphics.a" />
@@ -43,7 +46,6 @@
 			<Add library="../../SFML/SFML-2.5.1/lib/libFLAC.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libfreetype.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libogg.a" />
-			<Add library="../../SFML/SFML-2.5.1/lib/libopenal32.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-audio.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libsfml-network.a" />
 			<Add library="../../SFML/SFML-2.5.1/lib/libvorbis.a" />
@@ -51,6 +53,19 @@
 			<Add library="../../SFML/SFML-2.5.1/lib/libvorbisfile.a" />
 			<Add directory="../../SFML/SFML-2.5.1/lib" />
 		</Linker>
+		<Unit filename="Imgui/imconfig.h" />
+		<Unit filename="Imgui/imgui-SFML.cpp" />
+		<Unit filename="Imgui/imgui-SFML.h" />
+		<Unit filename="Imgui/imgui-SFML_export.h" />
+		<Unit filename="Imgui/imgui.cpp" />
+		<Unit filename="Imgui/imgui.h" />
+		<Unit filename="Imgui/imgui_demo.cpp" />
+		<Unit filename="Imgui/imgui_draw.cpp" />
+		<Unit filename="Imgui/imgui_internal.h" />
+		<Unit filename="Imgui/imgui_widgets.cpp" />
+		<Unit filename="Imgui/imstb_rectpack.h" />
+		<Unit filename="Imgui/imstb_textedit.h" />
+		<Unit filename="Imgui/imstb_truetype.h" />
 		<Unit filename="include/chunk.hpp" />
 		<Unit filename="include/color.hpp" />
 		<Unit filename="include/entity.hpp" />

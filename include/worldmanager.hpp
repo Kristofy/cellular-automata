@@ -18,6 +18,7 @@ class WorldManager
     void ToggleChunkBorders();
     void RefreshAll();
     void UpdateSubChunk(int x, int y, int subX, int subY);
+    bool IsBorderVisible();
   private:
     Chunk m_chunks[HorizontalChunks*VerticalChunks];
     Entity m_nope;
