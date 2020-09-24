@@ -98,6 +98,19 @@ WorldManager::WorldManager()
 
   int vertexIndex = 0;
   for(int i = 0; i <= HorizontalChunks; i++){
+    int x = i*ChunkSize;
+    m_chunkBorders[vertexIndex+0].position = sf::Vector2f(x, 0);
+    m_chunkBorders[vertexIndex+1].position = sf::Vector2f(x, WorldHeight);
+    m_chunkBorders[vertexIndex+2].position = sf::Vector2f(x-1, 0);
+    m_chunkBorders[vertexIndex+3].position = sf::Vector2f(x-1, WorldHeight);
+    m_chunkBorders[vertexIndex+0].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+1].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
+    vertexIndex += 4;
+  }
+
+  for(int i = 0; i <= VerticalChunks; i++){
     int y = i*ChunkSize;
     m_chunkBorders[vertexIndex+0].position = sf::Vector2f(0, y);
     m_chunkBorders[vertexIndex+1].position = sf::Vector2f(WorldWidth, y);
@@ -108,19 +121,7 @@ WorldManager::WorldManager()
     m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
     m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
     vertexIndex += 4;
-  }
 
-  for(int i = 0; i <= VerticalChunks; i++){
-    int x = i*ChunkSize;
-    m_chunkBorders[vertexIndex+0].position = sf::Vector2f(x, 0);
-    m_chunkBorders[vertexIndex+1].position = sf::Vector2f(x, WorldHeight);
-    m_chunkBorders[vertexIndex+2].position = sf::Vector2f(x-1, 0);
-    m_chunkBorders[vertexIndex+3].position = sf::Vector2f(x-1, WorldWidth);
-    m_chunkBorders[vertexIndex+0].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+1].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
-    vertexIndex += 4;
   }
 
 }
@@ -128,9 +129,9 @@ WorldManager::WorldManager()
 void WorldManager::Update(){
   for(int i = VerticalChunks-1; i >= 0; i--){
     if(i&1) for(int j = 0; j < HorizontalChunks; j++){
-      m_chunks[i*VerticalChunks + j].Update();
+      m_chunks[i*HorizontalChunks + j].Update();
     }else for(int j = HorizontalChunks - 1; j >= 0; j--){
-      m_chunks[i*VerticalChunks + j].Update();
+      m_chunks[i*HorizontalChunks + j].Update();
     }
   }
 }

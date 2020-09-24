@@ -27,9 +27,6 @@ sf::Vector2f operator-(const sf::Vector2f& a, const sf::Vector2f& b){
 }
 
 
-
-
-
 int main(){
 
   std::cout << "The allocated Stack size By the Whole World is: "<<sizeof(WorldManager)<<std::endl;
