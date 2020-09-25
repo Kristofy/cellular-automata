@@ -22,7 +22,7 @@ class Chunk
     ~Chunk();
 
     void Update();
-    void Render(sf::RenderTarget& window);
+    void Render(sf::RenderTarget& window, sf::FloatRect cameraBounds);
     void SetPosition(int y, int x);
     void SetBorder(Directions Side, Entity* map_to);
     void Bind(Directions Side, Chunk& other);
@@ -37,6 +37,7 @@ class Chunk
     WorldManager* m_manager;
     std::array<uint8_t, SubChunks*SubChunks> m_sub_chunks;
 
+    bool m_render_next;
     sf::Texture m_texture;
     sf::Sprite m_sprite;
 

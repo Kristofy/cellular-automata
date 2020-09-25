@@ -15,12 +15,9 @@ float fastestElement;
 #include "include/chunk.hpp"
 #include <string>
 
-Type current = Type::Sand;
-bool test = true;
-char buff[256];
 
 
-void test_chunk(WorldManager& manager, int x, int y);
+void test_chunk(WorldManager& manager, int x, int y, Type t);
 
 sf::Vector2f operator-(const sf::Vector2f& a, const sf::Vector2f& b){
   return sf::Vector2f(a.x-b.x, a.y-b.y);
@@ -80,11 +77,6 @@ int main(){
         case sf::Event::Closed:
           window.close();
         break;
-        case sf::Event::MouseMoved:
-          {
-
-          }
-        break;
         default:
         break;
       }
@@ -96,7 +88,7 @@ int main(){
     sf::Vector2f dist = (mouse - screenCenter);
     float len = sqrt(dist.x*dist.x+dist.y*dist.y);
 
-    if(!io.WantCaptureMouse && len > 150 && mouse.x >= 0 && mouse.x < CameraWidth && mouse.y >= 0 && mouse.y < CameraHeight){
+    if(!io.WantCaptureMouse && len > 150 && mouse.x >= 0 && mouse.x < CameraWidth && mouse.y >= 0 && mouse.y < CameraHeight && window.hasFocus()){
 
       dist.x = (dist.x/len);
       dist.y = (dist.y/len);
@@ -112,8 +104,14 @@ int main(){
     if(ImGui::SFML::isButtonPressed(sf::Mouse::Left, io)){
       int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
       int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
-      test_chunk(manager, x, y);
+      test_chunk(manager, x, y, Type::Sand);
     }
+    if(ImGui::SFML::isButtonPressed(sf::Mouse::Right, io)){
+      int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
+      int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
+      test_chunk(manager, x, y, Type::Water);
+    }
+
     if(ImGui::SFML::isKeyPressed(sf::Keyboard::B, io)){
       manager.ToggleChunkBorders();
     }
@@ -131,21 +129,19 @@ int main(){
     ImGui::SFML::Update(window, elapsed);
 
     sf::Vector2f mouseWPos = window.mapPixelToCoords(sf::Mouse::getPosition());
-    if(test){
-      ImGui::Begin("Logs", &test);
-      ImGui::TextColored(ImVec4(sf::Color(0x119da4ff)), ("Fps:   \t\t\t" + std::to_string(fps)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0xd8973cff)), ("Tps:   \t\t\t" + std::to_string(TPS)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0x77ff94ff)), ("Camera center: \t" + std::to_string(camera.getCenter().x) + " " + std::to_string(camera.getCenter().y)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0xec9dedff)), ("Mouse position: \t" + std::to_string(mouse.x) + " " + std::to_string(mouse.y)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0xf37748ff)), ("Mouse (w)position: " + std::to_string(mouseWPos.x) + " " + std::to_string(mouseWPos.y)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0x688e26ff)), ("Fastest speed: \t" + std::to_string(fastestElement)).c_str());
-      ImGui::TextColored(ImVec4(sf::Color(0xecc30bff)), ("Borders are:   \t" + std::string((manager.IsBorderVisible())? "on" : "off")).c_str());
-      bool border = manager.IsBorderVisible();
+    ImGui::Begin("Logs");
+    ImGui::TextColored(ImVec4(sf::Color(0x119da4ff)), ("Fps:   \t\t\t" + std::to_string(fps)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0xd8973cff)), ("Tps:   \t\t\t" + std::to_string(TPS)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0x77ff94ff)), ("Camera center: \t" + std::to_string(camera.getCenter().x) + " " + std::to_string(camera.getCenter().y)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0xec9dedff)), ("Mouse position: \t" + std::to_string(mouse.x) + " " + std::to_string(mouse.y)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0xf37748ff)), ("Mouse (w)position: " + std::to_string(mouseWPos.x) + " " + std::to_string(mouseWPos.y)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0x688e26ff)), ("Fastest speed: \t" + std::to_string(fastestElement)).c_str());
+    ImGui::TextColored(ImVec4(sf::Color(0xecc30bff)), ("Borders are:   \t" + std::string((manager.IsBorderVisible())? "on" : "off")).c_str());
+    bool border = manager.IsBorderVisible();
 
-      ImGui::SameLine();ImGui::Checkbox("", &border);
-      if(border != manager.IsBorderVisible()) manager.ToggleChunkBorders();
-      ImGui::End();
-    }
+    ImGui::SameLine();ImGui::Checkbox("", &border);
+    if(border != manager.IsBorderVisible()) manager.ToggleChunkBorders();
+    ImGui::End();
 
 //    ImGui::ShowDemoWindow();
     // Render
@@ -160,13 +156,13 @@ int main(){
   return EXIT_SUCCESS;
 }
 
-void test_chunk(WorldManager& manager, int x, int y){
-  int square_size = 50;
+void test_chunk(WorldManager& manager, int x, int y, Type t){
+  int square_size = 200;
   for(int i = 0; i < square_size; i++){
-      for(int j = 0; j < square_size; j++){
-          manager.Get(y-square_size/2+i,x-square_size/2+j).type = current;
-          manager.Refresh(y-square_size/2+i, x-square_size/2+j);
-      }
+    for(int j = 0; j < square_size; j++){
+      manager.Get(y-square_size/2+i,x-square_size/2+j).type = t;
+      manager.Refresh(y-square_size/2+i, x-square_size/2+j);
+    }
   }
 }
 

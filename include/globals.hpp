@@ -16,15 +16,15 @@ template<unsigned I> struct isPowerOfTwo{
 
 // TODO:  ChunkMod, SubChunkMod(?)
 
-const unsigned int TPS = 60;
+const unsigned int TPS = 30;
 const char * const Title = "Testing";
 const unsigned int CameraWidth = 1080;
 const unsigned int CameraHeight = 720;
-const unsigned int ChunkSize = 512;
+const unsigned int ChunkSize = 256;
 const unsigned int SubChunkSize = 16;
-const unsigned int ChunkOverlap = 6;
-const unsigned int HorizontalChunks = 4;
-const unsigned int VerticalChunks = 2;
+const unsigned int ChunkOverlap = 8;
+const unsigned int HorizontalChunks = 8;
+const unsigned int VerticalChunks = 4;
 const unsigned int BaseEnergy = 2;
 const std::uint8_t UpdateMask = 0x0f;
 

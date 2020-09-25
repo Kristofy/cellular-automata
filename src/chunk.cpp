@@ -15,9 +15,8 @@ Chunk::Chunk()
 
   m_texture.create(ChunkSize, ChunkSize);
   m_sprite.setTexture(m_texture);
-
+  m_render_next = true;
   m_color_data = (uint32_t*) malloc(4*ChunkSize*ChunkSize);
-  UpdateColors();
   Refresh();
 
 }
@@ -42,6 +41,16 @@ void Chunk::SetWorldPosition(int x, int y){
 }
 
 void Chunk::Update(){
+  uint64_t changed = 0;
+  for(int i = 0; i < SubChunks*SubChunks; i+=8){
+    changed |= *((uint64_t *)((&m_sub_chunks[0])+i));
+  }
+  if(!changed){
+    return;
+  }
+  m_render_next = true;
+
+
   for(unsigned i = ChunkSize + ChunkOverlap - 1; i >= ChunkOverlap; i--){
     if(i&1) for(unsigned j = ChunkOverlap; j < ChunkSize + ChunkOverlap; j++){
        if(m_sub_chunks[((i-ChunkOverlap)>>SubChunkShift)*SubChunks + ((j-ChunkOverlap)>>SubChunkShift)] == 0){
@@ -83,22 +92,33 @@ void Chunk::UpdateColors(){
   }
 }
 
-void Chunk::Render(sf::RenderTarget& window){
+void Chunk::Render(sf::RenderTarget& window, sf::FloatRect cameraBounds){
+  if(!m_sprite.getGlobalBounds().intersects(cameraBounds)){
+    return;
+  }
+//  if(!m_render_next){
+//      window.draw(m_sprite);
+//      return;
+//  }
+
   UpdateColors();
   m_texture.update((uint8_t*)m_color_data, ChunkSize, ChunkSize, 0, 0);
   window.draw(m_sprite);
 
+  // highlight updated subchunks
+
   sf::RectangleShape highlight(sf::Vector2f(SubChunkSize, SubChunkSize));
+  highlight.setFillColor(sf::Color(255,0,0,100));
   for(int i = 0; i < SubChunks; i++){
     for(int j = 0; j < SubChunks; j++){
       if(m_sub_chunks[i*SubChunks + j]){
         highlight.setPosition(j*SubChunkSize + m_sprite.getPosition().x, i*SubChunkSize + m_sprite.getPosition().y);
-        highlight.setFillColor(sf::Color(255,0,0,100));
         window.draw(highlight);
       }
     }
   }
 
+  m_render_next = false;
 }
 
 void Chunk::SetPosition(int y, int x){

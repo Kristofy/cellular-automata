@@ -137,8 +137,11 @@ void WorldManager::Update(){
 }
 
 void WorldManager::Render(sf::RenderTarget& window){
+  sf::Vector2f viewCenter(window.getView().getCenter());
+  sf::Vector2f viewSize(window.getView().getSize());
+  sf::FloatRect cameraBounds(viewCenter - viewSize / 2.f, viewSize);
   for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
-    m_chunks[i].Render(window);
+    m_chunks[i].Render(window, cameraBounds);
   }
 
   if(m_isBordersVisible)

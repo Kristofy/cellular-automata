@@ -4,7 +4,7 @@
 extern float fastestElement;
 
 void Processor::Update(unsigned y, unsigned x){
-  bool ok;
+  bool ok = false;
   unsigned potentialEnergy;
   unsigned my_placex, my_placey;
 
@@ -12,22 +12,22 @@ void Processor::Update(unsigned y, unsigned x){
   fastestElement = (fastestElement > m_curr->speed) ? fastestElement : m_curr->speed;
   int speed = (int)m_curr->speed;
   switch(m_curr->type){
-    case Air:
+    case Air: return;
     break;
     case Sand:
       // Setup
-      ok = true;
       potentialEnergy = speed > BaseEnergy ? speed : BaseEnergy;
 
       // Falling Downwards
-      my_placey = y + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y + (i - 1);
+        if(m_world[y+i][x]->type == Type::Air){
+          my_placey = y + i;
+          ok = true;
+        } else if(m_world[y+i][x]->type != Type::Sand){
           break;
         }
       }
+
       if(ok){
         Swap(y,x,my_placey,x);
         m_curr->acceleration += Gravity;
@@ -35,15 +35,12 @@ void Processor::Update(unsigned y, unsigned x){
       }
 
       // Falling Right
-
-      ok = true;
-      my_placey = y+potentialEnergy;
-      my_placex = x+potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y + (i - 1);
-          my_placex = x + (i - 1);
+        if(m_world[y+i][x+i]->type == Type::Air){
+          my_placey = y + i;
+          my_placex = x + i;
+          ok = true;
+        } else if(m_world[y+i][x+i]->type != Type::Sand){
           break;
         }
       }
@@ -55,14 +52,12 @@ void Processor::Update(unsigned y, unsigned x){
       }
 
       // Falling Left
-      ok = true;
-      my_placey = y + potentialEnergy;
-      my_placex = x - potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y + (i - 1);
-          my_placex = x - (i - 1);
+        if(m_world[y+i][x-i]->type == Type::Air){
+          my_placey = y + i;
+          my_placex = x - i;
+          ok = true;
+        } else if(m_world[y+i][x-i]->type != Type::Sand){
           break;
         }
       }
@@ -77,20 +72,17 @@ void Processor::Update(unsigned y, unsigned x){
       m_curr->speed *= Decay;
     break;
 
-    case Stone:
-    break;
-
+    case Stone: return;
     case Water:
       // Setup
-      ok = true;
       potentialEnergy = speed > 2? speed:2;
 
       // Falling Downwards
-      my_placey = y + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y+(i-1);
+        if(m_world[y+i][x]->type == Type::Air){
+          my_placey = y+i;
+          ok = true;
+        } else if(m_world[y+i][x]->type != Type::Water){
           break;
         }
       }
@@ -102,14 +94,12 @@ void Processor::Update(unsigned y, unsigned x){
       }
 
       // Falling Right
-      ok = true;
-      my_placey = y + potentialEnergy;
-      my_placex = x + potentialEnergy;
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x+i]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y + (i - 1);
-          my_placex = x + (i - 1);
+        if(m_world[y+i][x+i]->type == Type::Air){
+          my_placey = y + i;
+          my_placex = x + i;
+          ok = true;
+        }else if(m_world[y+i][x+i]->type != Type::Water){
           break;
         }
       }
@@ -120,16 +110,14 @@ void Processor::Update(unsigned y, unsigned x){
         break;
       }
 
-
       // Falling Left
-      ok = true;
-      my_placey = y + potentialEnergy;
-      my_placex = x - potentialEnergy;
+
       for(int i = 1; i <= potentialEnergy; i++){
-        if(m_world[y+i][x-i]->type != Type::Air){
-          ok = (i != 1);
-          my_placey = y + (i - 1);
-          my_placex = x - (i - 1);
+        if(m_world[y+i][x-i]->type == Type::Air){
+          my_placey = y + i;
+          my_placex = x - i;
+          ok = true;
+        } else if(m_world[y+i][x-i]->type != Type::Water){
           break;
         }
       }
@@ -140,13 +128,13 @@ void Processor::Update(unsigned y, unsigned x){
         break;
       }
 
-      // Flowing Right
-      ok = (speed > 0);
-      my_placex = x+speed;
+      // Flowing Left
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x+i]->type != Type::Air){
-          ok = (i!=1);
-          my_placex = x + (i - 1);
+        if(m_world[y][x-i]->type == Type::Air){
+          my_placex = x - i;
+          ok = true;
+        }
+        else if(m_world[y][x-i]->type != Type::Water){
           break;
         }
       }
@@ -157,13 +145,14 @@ void Processor::Update(unsigned y, unsigned x){
         break;
       }
 
-      // Flowing Left
-      ok = (speed > 0);
-      my_placex = x-speed;
+      // Flowing Right
+
       for(int i = 1; i <= speed; i++){
-        if(m_world[y][x-i]->type != Type::Air){
-          ok = (i!=1);
-          my_placex = x - (i - 1);
+        if(m_world[y][x+i]->type == Type::Air){
+          my_placex = x + i;
+          ok = true;
+        }
+        else if(m_world[y][x+i]->type != Type::Water){
           break;
         }
       }
@@ -179,7 +168,7 @@ void Processor::Update(unsigned y, unsigned x){
     break;
 
     default:
-    puts("An Update case not handled!");
+      puts("An Update case not handled!");
     break;
   }
 
