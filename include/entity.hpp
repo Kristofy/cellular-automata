@@ -11,6 +11,11 @@ class Entity
     Entity(Type t, int s) :type(t), speed(s) {}
     Entity(Type t) :type(t) {}
 
+    inline void Set(Type t){
+      type = t;
+      speed = 0;
+    }
+
     Type type;
 
     float speed;

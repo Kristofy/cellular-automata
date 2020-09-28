@@ -13,6 +13,7 @@ float fastestElement;
 #include "include/type.hpp"
 #include "include/util.hpp"
 #include "include/chunk.hpp"
+#include "include/brush.hpp"
 #include <string>
 
 
@@ -29,6 +30,8 @@ int main(){
   std::cout << "The allocated Stack size By the Whole World is: "<<sizeof(WorldManager)<<std::endl;
   // The main object
   WorldManager manager;
+  Brush::Init(manager);
+  Brush::SetType(Type::Sand);
 
   // Setting up the Render window for SFML
   sf::RenderWindow window(sf::VideoMode(CameraWidth, CameraHeight), Title, sf::Style::Close);
@@ -88,7 +91,7 @@ int main(){
     sf::Vector2f dist = (mouse - screenCenter);
     float len = sqrt(dist.x*dist.x+dist.y*dist.y);
 
-    if(!io.WantCaptureMouse && len > 150 && mouse.x >= 0 && mouse.x < CameraWidth && mouse.y >= 0 && mouse.y < CameraHeight)){
+    if(!io.WantCaptureMouse && len > 150 && mouse.x >= 0 && mouse.x < CameraWidth && mouse.y >= 0 && mouse.y < CameraHeight && window.hasFocus()){
 
       dist.x = (dist.x/len);
       dist.y = (dist.y/len);
@@ -104,12 +107,7 @@ int main(){
     if(ImGui::SFML::isButtonPressed(sf::Mouse::Left, io)){
       int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
       int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
-      test_chunk(manager, x, y, Type::Sand);
-    }
-    if(ImGui::SFML::isButtonPressed(sf::Mouse::Right, io)){
-      int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
-      int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
-      test_chunk(manager, x, y, Type::Water);
+      Brush::DrawCircle(x, y, 50);
     }
 
     if(ImGui::SFML::isKeyPressed(sf::Keyboard::B, io)){
@@ -143,8 +141,10 @@ int main(){
     if(border != manager.IsBorderVisible()) manager.ToggleChunkBorders();
     ImGui::End();
 
-//    ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
     // Render
+    
+    Brush::DisplayPalette();
     window.clear();
     manager.Render(window);
     ImGui::SFML::Render(window);
@@ -157,13 +157,15 @@ int main(){
 }
 
 void test_chunk(WorldManager& manager, int x, int y, Type t){
-  int square_size = 200;
-  for(int i = 0; i < square_size; i++){
-    for(int j = 0; j < square_size; j++){
-      manager.Get(y-square_size/2+i,x-square_size/2+j).type = t;
-      manager.Refresh(y-square_size/2+i, x-square_size/2+j);
-    }
-  }
+//  int square_size = 200;
+//  for(int i = 0; i < square_size; i++){
+//    for(int j = 0; j < square_size; j++){
+//      manager.Get(y-square_size/2+i,x-square_size/2+j).type = t;
+//      manager.Refresh(y-square_size/2+i, x-square_size/2+j);
+//    }
+//  }
+
+
 }
 
 

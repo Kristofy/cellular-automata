@@ -151,13 +151,12 @@ void WorldManager::Render(sf::RenderTarget& window){
 Entity& WorldManager::Get(int i, int j){
   return *m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_data[(i&ChunkMod) + ChunkOverlap][(j&ChunkMod) + ChunkOverlap];
 }
+void WorldManager::ToggleChunkBorders(){
+  m_isBordersVisible = !m_isBordersVisible;
+}
 
 void WorldManager::Refresh(int i, int j){
   m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_sub_chunks[((i&ChunkMod)>>SubChunkShift) * SubChunks + (((j&ChunkMod)>>SubChunkShift)&SubChunkMod)] |= UpdateMask;
-}
-
-void WorldManager::ToggleChunkBorders(){
-  m_isBordersVisible = !m_isBordersVisible;
 }
 
 void WorldManager::RefreshAll(){
