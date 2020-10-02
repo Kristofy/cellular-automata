@@ -14,6 +14,7 @@ float fastestElement;
 #include "include/util.hpp"
 #include "include/chunk.hpp"
 #include "include/brush.hpp"
+#include "include/camera.hpp"
 #include <string>
 
 
@@ -31,17 +32,19 @@ int main(){
   // The main object
   WorldManager manager;
   Brush::Init(manager);
-  Brush::SetType(Type::Sand);
 
   // Setting up the Render window for SFML
   sf::RenderWindow window(sf::VideoMode(CameraWidth, CameraHeight), Title, sf::Style::Close);
-  sf::Vector2f screenCenter(sf::Vector2f(CameraWidth/2.0f, CameraHeight/2.0f));
-  sf::View camera(screenCenter, sf::Vector2f(CameraWidth, CameraHeight));
-  //window.setView(camera);
-  sf::CircleShape c(40);
-  c.setFillColor(sf::Color::Red);
 
+  // ImGui Setup
+  ImGui::SFML::Init(window);
+  ImGui::CreateContext();
+  ImGuiIO& io = ImGui::GetIO();
+
+  // Camera setup
+  Camera mainCamera(CameraWidth, CameraHeight, CameraWidth/2, CameraHeight/2, window, io);
   //  window.setVerticalSyncEnabled(true);
+
 
   // Setting up the times for the game loop
   sf::Time timePerUpdate = sf::seconds(1.0f /(float)TPS);
@@ -53,11 +56,6 @@ int main(){
   // Fps count
   float fps = 0;
   float smoothing = 0.69f;
-
-  // ImGui Setup
-  ImGui::SFML::Init(window);
-  ImGui::CreateContext();
-  ImGuiIO& io = ImGui::GetIO();
 
 
   // Main game loop
@@ -86,28 +84,12 @@ int main(){
 
     }
 
-    float maximum = 6;
     sf::Vector2f mouse(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-    sf::Vector2f dist = (mouse - screenCenter);
-    float len = sqrt(dist.x*dist.x+dist.y*dist.y);
 
-    if(!io.WantCaptureMouse && len > 150 && mouse.x >= 0 && mouse.x < CameraWidth && mouse.y >= 0 && mouse.y < CameraHeight && window.hasFocus()){
-
-      dist.x = (dist.x/len);
-      dist.y = (dist.y/len);
-      dist.x = maximum * dist.x;
-      dist.y = maximum * dist.y;
-      dist.x *= dist.x * dist.x;
-      dist.y *= dist.y * dist.y;
-      dist.x *= elapsed.asSeconds();
-      dist.y *= elapsed.asSeconds();
-      camera.move(dist);
-      window.setView(camera);
-    }
     if(ImGui::SFML::isButtonPressed(sf::Mouse::Left, io)){
-      int x = (int)(camera.getCenter().x - screenCenter.x + mouse.x);
-      int y = (int)(camera.getCenter().y - screenCenter.y + mouse.y);
-      Brush::DrawCircle(x, y, 50);
+      int x = (int)(mainCamera.getCenter().x - mainCamera.x + mouse.x);
+      int y = (int)(mainCamera.getCenter().y - screenCenter.y + mouse.y);
+      Brush::DrawWithImGui(x, y);
     }
 
     if(ImGui::SFML::isKeyPressed(sf::Keyboard::B, io)){
@@ -123,6 +105,8 @@ int main(){
       manager.Update();
       lag -= timePerUpdate;
     }
+
+    mainCamera.Move(elapsed.asSeconds(), mouse);
 
     ImGui::SFML::Update(window, elapsed);
 
@@ -143,8 +127,8 @@ int main(){
 
     ImGui::ShowDemoWindow();
     // Render
-    
-    Brush::DisplayPalette();
+
+    Brush::DisplayImGuiPalette();
     window.clear();
     manager.Render(window);
     ImGui::SFML::Render(window);

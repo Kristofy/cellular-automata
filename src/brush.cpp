@@ -2,7 +2,7 @@
 
 namespace{
   static WorldManager* s_manager;
-  static Type s_type;
+  static Type s_type = Type::Air;
   static Brush::Model s_model = (Brush::Model)0;
   static int s_model_width = 1; // rect width
   static int s_model_height = 1; // rect height
@@ -38,19 +38,6 @@ namespace Brush{
     }
     for(int i = y>>SubChunkShift; i <= (y+height)>>SubChunkShift; i++){
       for(int j = x>>SubChunkShift; j <= (x+width)>>SubChunkShift; j++){
-        s_manager->Refresh(i<<SubChunkShift, j<<SubChunkShift);
-      }
-    }
-  }
-
-  void DrawRectWithImGui(int x, int y){
-    for(int i = y; i <= y+s_model_height; i++){
-      for(int j = x; j <= x+s_model_width; j++){
-        s_manager->Get(i, j).Set(s_type);
-      }
-    }
-    for(int i = y>>SubChunkShift; i <= (y+s_model_height)>>SubChunkShift; i++){
-      for(int j = x>>SubChunkShift; j <= (x+s_model_width)>>SubChunkShift; j++){
         s_manager->Refresh(i<<SubChunkShift, j<<SubChunkShift);
       }
     }
@@ -115,10 +102,10 @@ namespace Brush{
       case Model::Point:
         DrawPixel(x, y);
       case Model::Rect:
-        DrawRectWithImGui(x, y);
+        DrawRect(x, y, s_model_width, s_model_height);
       break;
       case Model::Circle:
-
+        DrawCircle(x, y, s_model_radius);
       break;
     }
   }

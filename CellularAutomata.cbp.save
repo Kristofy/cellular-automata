@@ -67,6 +67,9 @@
 		<Unit filename="Imgui/imstb_textedit.h" />
 		<Unit filename="Imgui/imstb_truetype.h" />
 		<Unit filename="include/brush.hpp" />
+		<Unit filename="include/camera.hpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="include/chunk.hpp" />
 		<Unit filename="include/color.hpp" />
 		<Unit filename="include/entity.hpp" />
@@ -77,6 +80,7 @@
 		<Unit filename="include/worldmanager.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/brush.cpp" />
+		<Unit filename="src/camera.cpp" />
 		<Unit filename="src/chunk.cpp" />
 		<Unit filename="src/processor.cpp" />
 		<Unit filename="src/worldmanager.cpp" />

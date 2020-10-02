@@ -2,7 +2,7 @@
 
 namespace{
   static WorldManager* s_manager;
-  static Type s_type;
+  static Type s_type = Type::Air;
   static Brush::Model s_model = (Brush::Model)0;
   static int s_model_width = 1; // rect width
   static int s_model_height = 1; // rect height
@@ -43,20 +43,6 @@ namespace Brush{
     }
   }
 
-  // with ImGuiInput
-  void DrawRect(int x, int y){
-    for(int i = y; i <= y+s_model_height; i++){
-      for(int j = x; j <= x+s_model_width; j++){
-        s_manager->Get(i, j).Set(s_type);
-      }
-    }
-    for(int i = y>>SubChunkShift; i <= (y+s_model_height)>>SubChunkShift; i++){
-      for(int j = x>>SubChunkShift; j <= (x+s_model_width)>>SubChunkShift; j++){
-        s_manager->Refresh(i<<SubChunkShift, j<<SubChunkShift);
-      }
-    }
-  }
-
   void DrawCircle(int x, int y, int radius){
     for(int i = y - radius; i <= y+radius; i++){
       for(int j = x - radius; j <= x+radius; j++){
@@ -73,7 +59,7 @@ namespace Brush{
     }
   }
 
-  void DisplayPalette(){
+  void DisplayImGuiPalette(){
     ImGui::Begin("Palette");
     if(ImGui::CollapsingHeader("Model")){
       ImGui::Indent(20.0f);
@@ -109,17 +95,17 @@ namespace Brush{
 
     ImGui::End();
   }
-  
+
   void DrawWithImGui(int x, int y){
     switch(s_model){
       case Model::Nothing: break;
       case Model::Point:
         DrawPixel(x, y);
       case Model::Rect:
-        DrawRectWithImGui(x, y)
+        DrawRect(x, y, s_model_width, s_model_height);
       break;
       case Model::Circle:
-        ImGui::DragInt("radius", &s_model_radius, 1.0f, 1, std::min(WorldWidth, WorldHeight), "%d");
+        DrawCircle(x, y, s_model_radius);
       break;
     }
   }

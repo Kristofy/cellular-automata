@@ -16,7 +16,6 @@ namespace Brush
   void DrawPixel(int x, int y);
 
   void DrawRect(int x, int y, int width, int height);
-  void DrawRectWithImGui(int x, int y);
 
   void DrawCircle(int x, int y, int radius);
 
