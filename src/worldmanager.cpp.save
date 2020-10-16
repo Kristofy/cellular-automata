@@ -98,6 +98,19 @@ WorldManager::WorldManager()
 
   int vertexIndex = 0;
   for(int i = 0; i <= HorizontalChunks; i++){
+    int x = i*ChunkSize;
+    m_chunkBorders[vertexIndex+0].position = sf::Vector2f(x, 0);
+    m_chunkBorders[vertexIndex+1].position = sf::Vector2f(x, WorldHeight);
+    m_chunkBorders[vertexIndex+2].position = sf::Vector2f(x-1, 0);
+    m_chunkBorders[vertexIndex+3].position = sf::Vector2f(x-1, WorldHeight);
+    m_chunkBorders[vertexIndex+0].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+1].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
+    m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
+    vertexIndex += 4;
+  }
+
+  for(int i = 0; i <= VerticalChunks; i++){
     int y = i*ChunkSize;
     m_chunkBorders[vertexIndex+0].position = sf::Vector2f(0, y);
     m_chunkBorders[vertexIndex+1].position = sf::Vector2f(WorldWidth, y);
@@ -108,32 +121,27 @@ WorldManager::WorldManager()
     m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
     m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
     vertexIndex += 4;
-  }
 
-  for(int i = 0; i <= VerticalChunks; i++){
-    int x = i*ChunkSize;
-    m_chunkBorders[vertexIndex+0].position = sf::Vector2f(x, 0);
-    m_chunkBorders[vertexIndex+1].position = sf::Vector2f(x, WorldHeight);
-    m_chunkBorders[vertexIndex+2].position = sf::Vector2f(x-1, 0);
-    m_chunkBorders[vertexIndex+3].position = sf::Vector2f(x-1, WorldWidth);
-    m_chunkBorders[vertexIndex+0].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+1].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+2].color = sf::Color::Red;
-    m_chunkBorders[vertexIndex+3].color = sf::Color::Red;
-    vertexIndex += 4;
   }
 
 }
 
 void WorldManager::Update(){
-  for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
-    m_chunks[i].Update();
+  for(int i = VerticalChunks-1; i >= 0; i--){
+    if(i&1) for(int j = 0; j < HorizontalChunks; j++){
+      m_chunks[i*HorizontalChunks + j].Update();
+    }else for(int j = HorizontalChunks - 1; j >= 0; j--){
+      m_chunks[i*HorizontalChunks + j].Update();
+    }
   }
 }
 
 void WorldManager::Render(sf::RenderTarget& window){
+  sf::Vector2f viewCenter(window.getView().getCenter());
+  sf::Vector2f viewSize(window.getView().getSize());
+  sf::FloatRect cameraBounds(viewCenter - viewSize / 2.f, viewSize);
   for(int i = 0; i < HorizontalChunks*VerticalChunks; i++){
-    m_chunks[i].Render(window);
+    m_chunks[i].Render(window, cameraBounds);
   }
 
   if(m_isBordersVisible)
@@ -141,15 +149,15 @@ void WorldManager::Render(sf::RenderTarget& window){
 }
 
 Entity& WorldManager::Get(int i, int j){
-  return *m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_data[i%ChunkSize + ChunkOverlap][j%ChunkSize + ChunkOverlap];
+  if()
+  return *m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_data[(i&ChunkMod) + ChunkOverlap][(j&ChunkMod) + ChunkOverlap];
+}
+void WorldManager::ToggleChunkBorders(){
+  m_isBordersVisible = !m_isBordersVisible;
 }
 
 void WorldManager::Refresh(int i, int j){
-  m_chunks[(i/ChunkSize)*HorizontalChunks + j/ChunkSize].m_sub_chunks[i%ChunkSize * ]
-}
-
-void WorldManager::ToggleChunkBorders(){
-  m_isBordersVisible = !m_isBordersVisible;
+  m_chunks[(i>>ChunkShift)*HorizontalChunks + (j>>ChunkShift)].m_sub_chunks[((i&ChunkMod)>>SubChunkShift) * SubChunks + (((j&ChunkMod)>>SubChunkShift)&SubChunkMod)] |= UpdateMask;
 }
 
 void WorldManager::RefreshAll(){
@@ -162,4 +170,8 @@ void WorldManager::UpdateSubChunk(int x, int y, int subX, int subY){
     if(x >= 0 && x < HorizontalChunks && y >= 0 && y < VerticalChunks){
       m_chunks[y*HorizontalChunks + x].m_sub_chunks[subY*SubChunks + subX] |= UpdateMask;
     }
+}
+
+bool WorldManager::IsBorderVisible(){
+  return m_isBordersVisible;
 }

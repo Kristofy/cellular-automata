@@ -96,17 +96,19 @@ void Chunk::Render(sf::RenderTarget& window, sf::FloatRect cameraBounds){
   if(!m_sprite.getGlobalBounds().intersects(cameraBounds)){
     return;
   }
-//  if(!m_render_next){
-//      window.draw(m_sprite);
-//      return;
-//  }
+#if !CHUNK_DEBUG
+  if(!m_render_next){
+      window.draw(m_sprite);
+      return;
+  }
+#endif // CHUNK_DEBUG
 
   UpdateColors();
   m_texture.update((uint8_t*)m_color_data, ChunkSize, ChunkSize, 0, 0);
   window.draw(m_sprite);
 
   // highlight updated subchunks
-
+#if CAMERA_DEBUG
   sf::RectangleShape highlight(sf::Vector2f(SubChunkSize, SubChunkSize));
   highlight.setFillColor(sf::Color(255,0,0,100));
   for(int i = 0; i < SubChunks; i++){
@@ -117,6 +119,7 @@ void Chunk::Render(sf::RenderTarget& window, sf::FloatRect cameraBounds){
       }
     }
   }
+#endif // CAMERA_DEBUG
 
   m_render_next = false;
 }

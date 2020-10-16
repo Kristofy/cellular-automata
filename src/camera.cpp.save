@@ -4,15 +4,6 @@
 void Camera::Move(const float& dt, sf::Vector2f& mouse){
 
   sf::Vector2f dist = mouse - m_origin;
-  float len = sqrt(dist.x*dist.x+dist.y*dist.y);
-
-  sf::RectangleShape c(m_moveBoundarySize);
-  c.setPosition(m_moveBoundary.left - m_origin.x + m_view.getCenter().x, m_moveBoundary.top - m_origin.y + m_view.getCenter().y);
-  sf::RectangleShape k({10.0f, 10.0f});
-  c.setFillColor(sf::Color::Red);
-  m_window.draw(c);
-
-  puts(m_moveBoundary.contains(mouse)?"inside":"outside");
 
   if(!m_io.WantCaptureMouse&& !m_moveBoundary.contains(mouse) && mouse.x >= 0 && mouse.x < m_widht && mouse.y >= 0 && mouse.y < m_height){
     // vertical
@@ -43,6 +34,7 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
 
       dist = mouse - sf::Vector2f(x, y);
 
+#if CAMERA_DEBUG
       m_window.setView(m_window.getDefaultView());
       sf::VertexArray line(sf::PrimitiveType::Lines, 2);
       line[0].position = sf::Vector2f(x, y);
@@ -51,7 +43,7 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
       line[1].color = sf::Color::Green;
       m_window.draw(line);
       m_window.setView(m_view);
-
+#endif // CAMERA_DEBUG
       float innerLen = sqrt((x-x2) * (x-x2) + (y-y2) * (y-y2));
 
       dist /= innerLen;
@@ -72,9 +64,9 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
     // f: y = m_origin.y - dist.y( m_origin.x - m_moveBoundary.left)/ dist.x
     y = m_origin.y - dist.y * ( m_origin.x - m_moveBoundary.left) / dist.x;
     x = m_moveBoundary.left;
-    
+
     if(y < m_moveBoundary.top + m_moveBoundary.height && y >= m_moveBoundary.top){
-      
+
       // e: x = 0
       // f: - dist.y * x + dist.x * y = -dist.y * m_origin.x + dist.x * m_origin.y
       // f: dist.x * y = -dist.y * m_origin.x + dist.x * m_origin.y
@@ -91,6 +83,7 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
 
       dist = mouse - sf::Vector2f(x, y);
 
+#if CAMERA_DEBUG
       m_window.setView(m_window.getDefaultView());
       sf::VertexArray line(sf::PrimitiveType::Lines, 2);
       line[0].position = sf::Vector2f(x, y);
@@ -99,7 +92,7 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
       line[1].color = sf::Color::Green;
       m_window.draw(line);
       m_window.setView(m_view);
-
+#endif // CAMERA_DEBUG
       float innerLen = sqrt((x-x2) * (x-x2) + (y-y2) * (y-y2));
 
       dist /= innerLen;
@@ -107,11 +100,18 @@ void Camera::Move(const float& dt, sf::Vector2f& mouse){
       dist *= m_maxCameraSpeed * dt;
       m_view.move(dist);
       m_window.setView(m_view);
-
     }
-
-
   }
+  
+#if CAMERA_DEBUG 1
+  m_window.setView(m_window.getDefaultView());
+  static bool moveInside_init = false;
+  static sf::RectangleShape moveInside(m_moveBoundary.widht, m_moveBoundary.height);
+  if(moveInside_init)
+  
+  
+  m_window.setView(m_view);
+#endif // CAMERA_DEBUG
 
 }
 

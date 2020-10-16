@@ -1,6 +1,9 @@
 #ifndef GLOBALS_H_INCLUDED
 #define GLOBALS_H_INCLUDED
+
+#define FULLSCREEN 1
 #include <cstdint>
+#include <SFML/Window/VideoMode.hpp>
 
 // Utility checks
 template<unsigned I> struct LogTwo{
@@ -18,8 +21,16 @@ template<unsigned I> struct isPowerOfTwo{
 
 const unsigned int TPS = 30;
 const char * const Title = "Testing";
+
+#if FULLSCREEN
+const unsigned int CameraWidth = sf::VideoMode::getDesktopMode().width;
+const unsigned int CameraHeight = sf::VideoMode::getDesktopMode().height;
+#else
 const unsigned int CameraWidth = 1080;
 const unsigned int CameraHeight = 720;
+#endif // FULLSCREEN
+
+
 const unsigned int ChunkSize = 256;
 const unsigned int SubChunkSize = 16;
 const unsigned int ChunkOverlap = 8;

@@ -17,15 +17,6 @@ float fastestElement;
 #include "include/camera.hpp"
 #include <string>
 
-
-
-void test_chunk(WorldManager& manager, int x, int y, Type t);
-
-sf::Vector2f operator-(const sf::Vector2f& a, const sf::Vector2f& b){
-  return sf::Vector2f(a.x-b.x, a.y-b.y);
-}
-
-
 int main(){
 
   std::cout << "The allocated Stack size By the Whole World is: "<<sizeof(WorldManager)<<std::endl;
@@ -33,8 +24,9 @@ int main(){
   WorldManager manager;
   Brush::Init(manager);
 
+
   // Setting up the Render window for SFML
-  sf::RenderWindow window(sf::VideoMode(CameraWidth, CameraHeight), Title, sf::Style::Close);
+  sf::RenderWindow window(sf::VideoMode(CameraWidth, CameraHeight), Title, sf::Style::Fullscreen);
 
   // ImGui Setup
   ImGui::SFML::Init(window);
@@ -96,6 +88,9 @@ int main(){
     if(ImGui::SFML::isKeyPressed(sf::Keyboard::B, io)){
       manager.ToggleChunkBorders();
     }
+    if(ImGui::SFML::isKeyPressed(sf::Keyboard::LControl, io) && ImGui::SFML::isKeyPressed(sf::Keyboard::C, io)){
+      window.close();
+    }
 
     if (lag >= timePerUpdate){
       fastestElement = 0;
@@ -134,23 +129,9 @@ int main(){
     mainCamera.Move(elapsed.asSeconds(), mouse);
     ImGui::SFML::Render(window);
     window.display();
-
-
   }
 
   return EXIT_SUCCESS;
-}
-
-void test_chunk(WorldManager& manager, int x, int y, Type t){
-//  int square_size = 200;
-//  for(int i = 0; i < square_size; i++){
-//    for(int j = 0; j < square_size; j++){
-//      manager.Get(y-square_size/2+i,x-square_size/2+j).type = t;
-//      manager.Refresh(y-square_size/2+i, x-square_size/2+j);
-//    }
-//  }
-
-
 }
 
 

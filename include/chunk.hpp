@@ -11,6 +11,8 @@
 #include "color.hpp"
 #include "util.hpp"
 
+#define CHUNK_DEBUG 0
+
 class WorldManager;
 
 class Chunk

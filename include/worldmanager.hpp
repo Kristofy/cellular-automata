@@ -22,6 +22,7 @@ class WorldManager
   private:
     Chunk m_chunks[HorizontalChunks*VerticalChunks];
     Entity m_nope;
+    Entity m_dump;
 
     bool m_isBordersVisible;
     sf::VertexArray m_chunkBorders;
